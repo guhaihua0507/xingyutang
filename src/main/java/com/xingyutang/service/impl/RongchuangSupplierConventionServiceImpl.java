@@ -144,6 +144,10 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
             throw new RequestException(2, "你还没有预约");
         }
 
+        if (rongchuangSupplier.getSignTime() == null) {
+            throw new RequestException(4, "你没有签到");
+        }
+
         if (rongchuangSupplier.getPrize() != null) {
             return rongchuangSupplier.getPrize();
         }
