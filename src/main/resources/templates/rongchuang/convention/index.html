@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>index</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .app {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .move-anim {
+            transition: top 1s;
+        }
+
+        .page {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background-image: url("/rongchuang/convention/background.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            padding-left:20%;
+            padding-right:20%;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
+        .page.page1 {
+            z-index: 99;
+        }
+        .page.page2 {
+            z-index: 98;
+        }
+        .page.page3 {
+            z-index: 97;
+        }
+        .form-container, .bookInfo {
+            text-align: center;
+        }
+        .form-container {
+            position: absolute;
+            bottom: 12px;
+            width: 100%;
+        }
+        .form-container > div {
+            margin-top: 6px;
+        }
+        .form-container input {
+            text-align: center;
+        }
+        .swip-up {
+            top: -100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div :class="['page', 'page1', 'move-anim', currentStep != 0 ? 'swip-up' : '']" @click="gotoBook()">
+        <div style="margin-top: 48px;margin-left:-20%">
+            <img src="/rongchuang/convention/logo.png" style="width:120px;">
+        </div>
+        <div style="margin-top: 80px;text-align: center;">
+            <img src="/rongchuang/convention/invite1.png">
+            <img src="/rongchuang/convention/invite2.png" style="width:100%">
+        </div>
+        <div style="margin-top: 60px;">
+            <img src="/rongchuang/convention/content1.png" style="width:100%;">
+        </div>
+    </div>
+
+    <div class="page page2 " v-if="currentStep == 1 && !booked">
+        <div class="form-container">
+            <div><input id="supplierName" v-model="bookInfo.supplierName" placeholder="供应商名称"></div>
+            <div><input id="name" v-model="bookInfo.name" placeholder="姓名"></div>
+            <div><input id="phoneNumber" v-model="bookInfo.phoneNumber" placeholder="手机号码"></div>
+            <div>
+                <button type="button" @click="submitBookInfo()">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page page3" v-if="currentStep == 1 && booked">
+        <div class="bookInfo" v-if="booked">
+            <div>
+                <header>预约成功</header>
+                <p>
+                    请与3月20号参与会议
+                </p>
+            </div>
+            <div>
+                <img src="/rongchuang/convention/qrcode.jpg" style="width: 240px; height:240px;">
+            </div>
+            <div>
+                <button type="button">签到</button>
+                <button type="button">抽奖</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/libs/vue.js" type="text/javascript"></script>
+<script src="/js/libs/axios.min.js" type="text/javascript"></script>
+<script>
+    let vm = new Vue({
+        el: ".app",
+        data: {
+            currentStep: 0,
+            booked: false,
+            bookInfo: {
+                supplierName: null,
+                name: null,
+                phoneNumber: null
+            }
+        },
+
+        mounted() {
+            this.checkUser().then(() => {
+                this.loadAppointment();
+            });
+        },
+        methods: {
+            checkUser: function () {
+                return new Promise(function (resolve, reject) {
+                    axios.get("/api/user").then(resp => {
+                        console.log(resp.data);
+                        let data = resp.data;
+                        if (data.code == 0) {
+                            resolve(data.data);
+                        } else {
+                            vm.doWxLogin(data.data.appId);
+                            reject();
+                        }
+                    }).catch(resp => {
+                        console.log("failed " + resp.status + ":" + resp.statusText);
+                    });
+                });
+            },
+
+            doWxLogin: function (appId) {
+                var port = location.port ? ":" + location.port : "";
+                var callbackAction = location.protocol + "//" + location.hostname + port + "/api/weixinCallback?redirectUrl=" + encodeURIComponent(location.href);
+                location.href = callbackAction + "&code=12345&status=111";  //TODO for testing, delete me and uncomment below
+                // callbackAction = encodeURIComponent(callbackAction);
+                // location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId + "&redirect_uri=" + callbackAction + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
+            },
+
+            gotoBook: function () {
+                this.currentStep = 1;
+            },
+
+            loadAppointment: function () {
+                axios.get("/api/rongchuang/convention/appointment").then(resp => {
+                    var data = resp.data;
+                    if (data.code == 0 && data.data != null) {
+                        this.bookInfo = data.data;
+                        this.booked = true;
+                    }
+                });
+            },
+
+            submitBookInfo: function () {
+                if (!this.bookInfo.supplierName) {
+                    alert("请输入供应商名称");
+                    return;
+                }
+                if (!this.bookInfo.name) {
+                    alert("请输入姓名");
+                    return;
+                }
+                if (!this.bookInfo.phoneNumber) {
+                    alert("请输入手机号");
+                    return;
+                }
+                axios.post("/api/rongchuang/convention/appointment", this.bookInfo).then(resp => {
+                    var data = resp.data;
+                    if (data && data.code == 0) {
+                        this.booked = true;
+                        alert("预约成功");
+                    } else {
+                        alert("预约失败:" + data.message);
+                    }
+                }).catch(resp => {
+                    alert(resp.status + ":" + resp.statusText);
+                })
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
