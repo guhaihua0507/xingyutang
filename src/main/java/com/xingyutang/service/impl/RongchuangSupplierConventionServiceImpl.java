@@ -93,6 +93,10 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
     @Transactional
     @Override
     public RongchuangSupplier createSupplier(RongchuangSupplier entity) {
+        RongchuangSupplier _entity = getSupplierByUserId(entity.getUserId());
+        if (_entity != null) {
+            return _entity;
+        }
         rongchuangSupplierMapper.insert(entity);
         return entity;
     }
