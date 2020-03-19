@@ -40,6 +40,7 @@ public class RongchuangSupplierConventionController {
     }
 
     @GetMapping("/suppliers")
+    @ResponseBody
     public ResponseData listSuppliers() {
         return ResponseData.ok(rongchuangSupplierConventionService.listSuppliers());
     }
