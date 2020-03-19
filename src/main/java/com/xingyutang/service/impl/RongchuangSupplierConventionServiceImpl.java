@@ -135,10 +135,6 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
             throw new RequestException(1, "抽奖未开始");
         }
 
-        if (System.currentTimeMillis() > lotteryEndTime.getTime()) {
-            throw new RequestException(3, "抽奖已经结束");
-        }
-
         RongchuangSupplier rongchuangSupplier = getSupplierByUserId(userId);
         if (rongchuangSupplier == null) {
             throw new RequestException(2, "你还没有预约");
@@ -150,6 +146,10 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
 
         if (rongchuangSupplier.getPrize() != null) {
             return rongchuangSupplier.getPrize();
+        }
+
+        if (System.currentTimeMillis() > lotteryEndTime.getTime()) {
+            throw new RequestException(3, "抽奖已经结束");
         }
 
         int prize = -1;
