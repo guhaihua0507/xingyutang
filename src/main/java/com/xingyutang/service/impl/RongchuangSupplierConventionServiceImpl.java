@@ -41,12 +41,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class RongchuangSupplierConventionServiceImpl implements RongchuangSupplierConventionService {
     private Logger logger		= LoggerFactory.getLogger(RongchuangSupplierConventionServiceImpl.class);
 
-    private final static String SIGN_IN_TIME = "2020-03-20 19:20:00";
-    private final static String SIGN_IN_END_TIME = "2020-03-20 19:30:00";
-    private final static String LOTTERY_TIME =  "2020-03-20 21:50:00";
+    private final static String SIGN_IN_TIME =      "2020-03-20 19:20:00";
+    private final static String SIGN_IN_END_TIME =  "2020-03-20 19:30:00";
+    private final static String LOTTERY_TIME =      "2020-03-20 21:50:00";
+    private final static String LOTTERY_END_TIME =  "2020-03-20 22:00:00";
     private Date signTime;
     private Date signEndTime;
     private Date lotteryTime;
+    private Date lotteryEndTime;
     private List<Long> users = new CopyOnWriteArrayList<>();
     private List<Integer> prizes = new CopyOnWriteArrayList<>();
     private Set<Long> passedUsers = new HashSet<>();
@@ -58,7 +60,7 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
         signTime = DateUtils.parseDate(SIGN_IN_TIME, "yyyy-MM-dd HH:mm:ss");
         signEndTime = DateUtils.parseDate(SIGN_IN_END_TIME, "yyyy-MM-dd HH:mm:ss");
         lotteryTime = DateUtils.parseDate(LOTTERY_TIME, "yyyy-MM-dd HH:mm:ss");
-
+        lotteryEndTime = DateUtils.parseDate(LOTTERY_END_TIME, "yyyy-MM-dd HH:mm:ss");
         /*
          * init prize
         */
@@ -136,6 +138,10 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
     public int lottery(long userId) throws RequestException {
         if (System.currentTimeMillis() < lotteryTime.getTime()) {
             throw new RequestException(1, "抽奖未开始");
+        }
+
+        if (System.currentTimeMillis() > lotteryEndTime.getTime()) {
+            throw new RequestException(3, "抽奖已经结束");
         }
 
         RongchuangSupplier rongchuangSupplier = getSupplierByUserId(userId);
