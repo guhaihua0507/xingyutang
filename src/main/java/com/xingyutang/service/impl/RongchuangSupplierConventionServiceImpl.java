@@ -4,9 +4,7 @@ import com.xingyutang.exception.RequestException;
 import com.xingyutang.mapper.RongchuangSupplierMapper;
 import com.xingyutang.model.entity.RongchuangSupplier;
 import com.xingyutang.service.RongchuangSupplierConventionService;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -26,13 +24,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -123,11 +118,11 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
             throw new RequestException(1, "会议尚未开始，请耐心等待");
         }
         if (System.currentTimeMillis() > signEndTime.getTime()) {
-            throw new RequestException(1, "签到已经结束");
+            throw new RequestException(2, "签到已经结束");
         }
         RongchuangSupplier supplier = getSupplierByUserId(userId);
         if (supplier == null) {
-            throw new RequestException(2, "你还没有预约");
+            throw new RequestException(3, "你还没有预约");
         }
         supplier.setSignTime(new Date());
         rongchuangSupplierMapper.updateByPrimaryKey(supplier);
