@@ -50,7 +50,7 @@ public class WeixinController {
                 user.setCreateTime(new Date());
                 userService.createUser(user);
 
-                System.out.println("new user created");
+                logger.info("user created {}", user);
             }
 
             UserVO userVO = new UserVO();
