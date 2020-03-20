@@ -15,6 +15,7 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
                         "/api/weixinCallback",
                         "/api/rongchuang/convention/index",
                         "/api/rongchuang/convention/suppliers",
-                        "/api/rongchuang/convention/download");
+                        "/api/rongchuang/convention/download",
+                        "/api/lvcheng/**");
     }
 }
