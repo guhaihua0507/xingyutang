@@ -23,6 +23,7 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
     @Override
     @Transactional
     public LvchengPoetContest updateContestResult(LvchengPoetContest contest) {
+        fillDefault(contest);
         contest.setCreateTime(new Date());
         LvchengPoetContest entity = getContestResultByUserId(contest.getUserId());
 
@@ -32,7 +33,6 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
         }
 
         fillDefault(entity);
-        fillDefault(contest);
         contest.setId(entity.getId());
         if (entity.getScore() > contest.getScore()
                 || (entity.getScore() == contest.getScore() && entity.getUsedTime() <= contest.getUsedTime())) {
