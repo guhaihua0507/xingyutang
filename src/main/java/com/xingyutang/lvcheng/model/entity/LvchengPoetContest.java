@@ -1,5 +1,6 @@
 package com.xingyutang.lvcheng.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,7 +12,9 @@ public class LvchengPoetContest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name="user_id")
     private String userId;
+    @Column(name = "nick_name")
     private String nickName;
     private Integer score;
     private Integer usedTime;

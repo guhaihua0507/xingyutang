@@ -62,8 +62,9 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
 
     @Override
     public List<LvchengPoetContest> listRanking() {
-        Condition condition = new Condition(LvchengPoetContest.class);
-        condition.setOrderByClause("score desc, used_time asc");
-        return lvchengPoetContestMapper.selectByExample(condition);
+//        Condition condition = new Condition(LvchengPoetContest.class);
+//        condition.setOrderByClause("score desc, used_time asc, create_time limit 10");
+//        return lvchengPoetContestMapper.selectByExample(condition);
+        return lvchengPoetContestMapper.selectTop10Ranking();
     }
 }
