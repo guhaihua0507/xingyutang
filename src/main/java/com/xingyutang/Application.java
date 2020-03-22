@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.xingyutang.mapper", "com.xingyutang.lvcheng.mapper"})
+@MapperScan(basePackages = {"com.xingyutang.app.mapper", "com.xingyutang.rongchuang.mapper", "com.xingyutang.lvcheng.mapper"})
 @ComponentScan(basePackages = {"com.xingyutang.**.controller", "com.xingyutang.**.service", "com.xingyutang.config"})
 @EnableScheduling
 public class Application {

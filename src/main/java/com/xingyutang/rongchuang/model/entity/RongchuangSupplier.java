@@ -1,4 +1,4 @@
-package com.xingyutang.model.entity;
+package com.xingyutang.rongchuang.model.entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

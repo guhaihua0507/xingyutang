@@ -2,8 +2,8 @@ package com.xingyutang.config;
 
 import com.alibaba.fastjson.JSON;
 import com.xingyutang.Application;
-import com.xingyutang.model.vo.ResponseData;
-import com.xingyutang.service.WeixinService;
+import com.xingyutang.app.model.vo.ResponseData;
+import com.xingyutang.app.service.WeixinService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

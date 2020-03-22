@@ -1,4 +1,4 @@
-package com.xingyutang.model.entity;
+package com.xingyutang.app.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;

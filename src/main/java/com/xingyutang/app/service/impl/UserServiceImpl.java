@@ -1,8 +1,8 @@
-package com.xingyutang.service.impl;
+package com.xingyutang.app.service.impl;
 
-import com.xingyutang.mapper.UserMapper;
-import com.xingyutang.model.entity.User;
-import com.xingyutang.service.UserService;
+import com.xingyutang.app.mapper.UserMapper;
+import com.xingyutang.app.model.entity.User;
+import com.xingyutang.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

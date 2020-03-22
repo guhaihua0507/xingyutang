@@ -1,8 +1,8 @@
-package com.xingyutang.controller;
+package com.xingyutang.app.controller;
 
-import com.xingyutang.model.vo.ResponseData;
-import com.xingyutang.model.vo.UserVO;
-import com.xingyutang.service.WeixinService;
+import com.xingyutang.app.model.vo.ResponseData;
+import com.xingyutang.app.model.vo.UserVO;
+import com.xingyutang.app.service.WeixinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

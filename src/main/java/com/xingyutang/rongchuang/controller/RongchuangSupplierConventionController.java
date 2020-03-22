@@ -1,10 +1,10 @@
-package com.xingyutang.controller;
+package com.xingyutang.rongchuang.controller;
 
+import com.xingyutang.app.model.vo.ResponseData;
+import com.xingyutang.app.model.vo.UserVO;
 import com.xingyutang.exception.RequestException;
-import com.xingyutang.model.entity.RongchuangSupplier;
-import com.xingyutang.model.vo.ResponseData;
-import com.xingyutang.model.vo.UserVO;
-import com.xingyutang.service.RongchuangSupplierConventionService;
+import com.xingyutang.rongchuang.model.entity.RongchuangSupplier;
+import com.xingyutang.rongchuang.service.RongchuangSupplierConventionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;

@@ -1,10 +1,10 @@
-package com.xingyutang.service.impl;
+package com.xingyutang.app.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.xingyutang.model.vo.WxUser;
-import com.xingyutang.model.vo.WxUserToken;
-import com.xingyutang.service.WeixinService;
+import com.xingyutang.app.model.vo.WxUser;
+import com.xingyutang.app.model.vo.WxUserToken;
+import com.xingyutang.app.service.WeixinService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.ParseException;

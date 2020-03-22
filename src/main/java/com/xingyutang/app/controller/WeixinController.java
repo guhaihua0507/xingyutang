@@ -1,12 +1,11 @@
-package com.xingyutang.controller;
+package com.xingyutang.app.controller;
 
-import com.xingyutang.model.entity.User;
-import com.xingyutang.model.vo.UserVO;
-import com.xingyutang.model.vo.WxUser;
-import com.xingyutang.model.vo.WxUserToken;
-import com.xingyutang.service.UserService;
-import com.xingyutang.service.WeixinService;
-import com.xingyutang.service.impl.RongchuangSupplierConventionServiceImpl;
+import com.xingyutang.app.model.entity.User;
+import com.xingyutang.app.model.vo.UserVO;
+import com.xingyutang.app.model.vo.WxUser;
+import com.xingyutang.app.model.vo.WxUserToken;
+import com.xingyutang.app.service.UserService;
+import com.xingyutang.app.service.WeixinService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

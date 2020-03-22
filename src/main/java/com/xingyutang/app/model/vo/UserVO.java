@@ -1,4 +1,4 @@
-package com.xingyutang.model.vo;
+package com.xingyutang.app.model.vo;
 
 public class UserVO {
     private Long id;

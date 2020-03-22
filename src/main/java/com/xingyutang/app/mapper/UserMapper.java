@@ -1,6 +1,6 @@
-package com.xingyutang.mapper;
+package com.xingyutang.app.mapper;
 
-import com.xingyutang.model.entity.User;
+import com.xingyutang.app.model.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

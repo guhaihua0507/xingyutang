@@ -1,6 +1,6 @@
-package com.xingyutang.mapper;
+package com.xingyutang.rongchuang.mapper;
 
-import com.xingyutang.model.entity.RongchuangSupplier;
+import com.xingyutang.rongchuang.model.entity.RongchuangSupplier;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

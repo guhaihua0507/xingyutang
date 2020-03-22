@@ -1,8 +1,7 @@
-package com.xingyutang.service;
+package com.xingyutang.rongchuang.service;
 
 import com.xingyutang.exception.RequestException;
-import com.xingyutang.model.entity.RongchuangSupplier;
-import org.springframework.transaction.annotation.Transactional;
+import com.xingyutang.rongchuang.model.entity.RongchuangSupplier;
 
 import java.io.IOException;
 import java.io.InputStream;

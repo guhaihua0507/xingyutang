@@ -1,6 +1,6 @@
-package com.xingyutang.service;
+package com.xingyutang.app.service;
 
-import com.xingyutang.model.entity.User;
+import com.xingyutang.app.model.entity.User;
 
 public interface UserService {
     public void createUser(User user);

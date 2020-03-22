@@ -1,7 +1,7 @@
-package com.xingyutang.service;
+package com.xingyutang.app.service;
 
-import com.xingyutang.model.vo.WxUser;
-import com.xingyutang.model.vo.WxUserToken;
+import com.xingyutang.app.model.vo.WxUser;
+import com.xingyutang.app.model.vo.WxUserToken;
 
 import java.util.Map;
 

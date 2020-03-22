@@ -2,7 +2,7 @@ package com.xingyutang.lvcheng.controller;
 
 import com.xingyutang.lvcheng.model.entity.LvchengPoetContest;
 import com.xingyutang.lvcheng.service.LvchengPoetContestService;
-import com.xingyutang.model.vo.ResponseData;
+import com.xingyutang.app.model.vo.ResponseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

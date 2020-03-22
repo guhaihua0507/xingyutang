@@ -1,5 +1,7 @@
 package com.xingyutang.lvcheng.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.xingyutang.lvcheng.mapper.LvchengPoetContestMapper;
 import com.xingyutang.lvcheng.model.entity.LvchengPoetContest;
 import com.xingyutang.lvcheng.service.LvchengPoetContestService;
@@ -62,9 +64,6 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
 
     @Override
     public List<LvchengPoetContest> listRanking() {
-//        Condition condition = new Condition(LvchengPoetContest.class);
-//        condition.setOrderByClause("score desc, used_time asc, create_time limit 10");
-//        return lvchengPoetContestMapper.selectByExample(condition);
         return lvchengPoetContestMapper.selectTop10Ranking();
     }
 }
