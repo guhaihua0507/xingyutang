@@ -1,7 +1,5 @@
 package com.xingyutang.lvcheng.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.xingyutang.lvcheng.mapper.LvchengPoetContestMapper;
 import com.xingyutang.lvcheng.model.entity.LvchengPoetContest;
 import com.xingyutang.lvcheng.service.LvchengPoetContestService;
