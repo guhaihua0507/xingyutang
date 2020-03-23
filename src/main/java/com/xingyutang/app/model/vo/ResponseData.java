@@ -1,20 +1,37 @@
 package com.xingyutang.app.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ResponseData {
     private int code;
     private String message;
     private Object data;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer pageNum;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer pageSize;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long total;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer pages;
+
     public ResponseData(int code, String message, Object data) {
         this.code = code;
         this.message = message;
-        this.data = data;
+        if (data instanceof Page) {
+            Page<?> pagedData = (Page<?>)data;
+            this.pageNum = pagedData.getPageNum();
+            this.pageSize = pagedData.getPageSize();
+            this.total = pagedData.getTotal();
+            this.pages = pagedData.getPages();
+            this.data = new ArrayList<>(pagedData);
+        } else {
+            this.data = data;
+        }
     }
 
     public static ResponseData ok() {
@@ -22,11 +39,7 @@ public class ResponseData {
     }
 
     public static ResponseData ok(Object data) {
-        if (data != null && data instanceof Page) {
-            return new PagedResponseData(0, null, data);
-        } else {
-            return new ResponseData(0, null, data);
-        }
+        return new ResponseData(0, null, data);
     }
 
     public static ResponseData error(int code, String message) {
@@ -34,11 +47,7 @@ public class ResponseData {
     }
 
     public static ResponseData error(int code, String message, Object data) {
-        if (data != null && data instanceof Page) {
-            return new PagedResponseData(0, null, data);
-        } else {
-            return new ResponseData(code, message, data);
-        }
+        return new ResponseData(code, message, data);
     }
 
     public int getCode() {
@@ -65,56 +74,35 @@ public class ResponseData {
         this.data = data;
     }
 
-    public static class PagedResponseData extends ResponseData {
-        private Integer pageNum;
-        private Integer pageSize;
-        private Long total;
-        private Integer pages;
+    public Integer getPageNum() {
+        return pageNum;
+    }
 
-        public PagedResponseData(int code, String message, Object data) {
-            super(code, message, data);
-            Page<?> page = (Page<?>)data;
-            pageNum = page.getPageNum();
-            pageSize = page.getPageSize();
-            total = page.getTotal();
-            pages = page.getPages();
-            List<Object> _data = new ArrayList<>();
-            _data.addAll(page);
-            this.setData(_data);
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
 
-            PageHelper.clearPage();
-        }
+    public Integer getPageSize() {
+        return pageSize;
+    }
 
-        public Integer getPageNum() {
-            return pageNum;
-        }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
-        public void setPageNum(Integer pageNum) {
-            this.pageNum = pageNum;
-        }
+    public Long getTotal() {
+        return total;
+    }
 
-        public Integer getPageSize() {
-            return pageSize;
-        }
+    public void setTotal(Long total) {
+        this.total = total;
+    }
 
-        public void setPageSize(Integer pageSize) {
-            this.pageSize = pageSize;
-        }
+    public Integer getPages() {
+        return pages;
+    }
 
-        public Long getTotal() {
-            return total;
-        }
-
-        public void setTotal(Long total) {
-            this.total = total;
-        }
-
-        public Integer getPages() {
-            return pages;
-        }
-
-        public void setPages(Integer pages) {
-            this.pages = pages;
-        }
+    public void setPages(Integer pages) {
+        this.pages = pages;
     }
 }
