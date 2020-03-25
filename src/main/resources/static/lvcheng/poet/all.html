@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .data-table {
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .data-table td, .data-table th {
+            padding: 4px 8px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="display:inline-block;">
+        <button type="button" @click="exportData()">导出</button>
+        <table class="data-table" align="center" border="1px" cellspacing="0">
+            <tr>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>得分</th>
+                <th>用时</th>
+            </tr>
+            <tbody>
+            <tr v-for="(item, index) in dataList" :key="index">
+                <td>{{index + 1}}</td>
+                <td>{{item.nickName}}</td>
+                <td>{{item.score}}</td>
+                <td>{{item.usedTime}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/js/libs/vue.js"></script>
+<script src="/js/libs/axios.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            dataList: []
+        },
+        mounted: function () {
+            axios.get("/api/lvcheng/poet/all").then(resp => {
+                var data = resp.data;
+                if (data.code == 0 && data.data != null) {
+                    this.dataList = data.data;
+                } else {
+                    alert(data.message);
+                }
+            }).catch(resp => {
+                alert("failed " + resp.status + ":" + resp.statusText);
+            });
+        },
+        methods: {
+            exportData: function() {
+                window.open("/api/lvcheng/poet/export");
+            }
+        }
+    })
+</script>
+</body>
+</html>
