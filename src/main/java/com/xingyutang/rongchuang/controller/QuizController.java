@@ -1,7 +1,7 @@
 package com.xingyutang.rongchuang.controller;
 
 import com.xingyutang.app.model.vo.ResponseData;
-import com.xingyutang.rongchuang.mapper.QuizAnswerMapper;
+import com.xingyutang.lvcheng.mapper.QuizAnswerMapper;
 import com.xingyutang.rongchuang.model.entity.QuizAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

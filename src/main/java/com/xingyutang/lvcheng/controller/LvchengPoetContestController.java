@@ -3,6 +3,7 @@ package com.xingyutang.lvcheng.controller;
 import com.xingyutang.lvcheng.model.entity.LvchengPoetContest;
 import com.xingyutang.lvcheng.service.LvchengPoetContestService;
 import com.xingyutang.app.model.vo.ResponseData;
+import com.xingyutang.rongchuang.model.entity.QuizAnswer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,31 @@ public class LvchengPoetContestController {
         }
     }
 
+    @PostMapping("/answer")
+    public ResponseData createQuizAnswer(@RequestBody QuizAnswer quizAnswer) {
+        if (lvchengPoetContestService.existsWithPrimaryKey(quizAnswer.getUserId())) {
+            lvchengPoetContestService.updateByPrimaryKey(quizAnswer);
+        } else {
+            lvchengPoetContestService.insert(quizAnswer);
+        }
+        return ResponseData.ok(quizAnswer);
+    }
+
     @GetMapping("/rankingList")
     public ResponseData listRanking() {
         try {
             List<LvchengPoetContest> list = lvchengPoetContestService.listRanking();
+            return ResponseData.ok(list);
+        } catch (Exception e) {
+            logger.error("error listing ranking ", e);
+            return ResponseData.error(1, e.getMessage());
+        }
+    }
+
+    @GetMapping("/quizList")
+    public ResponseData quizList() {
+        try {
+            List<QuizAnswer> list = lvchengPoetContestService.listQuizAll();
             return ResponseData.ok(list);
         } catch (Exception e) {
             logger.error("error listing ranking ", e);

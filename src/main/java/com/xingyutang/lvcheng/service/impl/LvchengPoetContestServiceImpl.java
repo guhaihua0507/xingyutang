@@ -1,9 +1,10 @@
 package com.xingyutang.lvcheng.service.impl;
 
 import com.xingyutang.lvcheng.mapper.LvchengPoetContestMapper;
+import com.xingyutang.lvcheng.mapper.QuizAnswerMapper;
 import com.xingyutang.lvcheng.model.entity.LvchengPoetContest;
 import com.xingyutang.lvcheng.service.LvchengPoetContestService;
-import com.xingyutang.rongchuang.model.entity.RongchuangSupplier;
+import com.xingyutang.rongchuang.model.entity.QuizAnswer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -30,6 +31,9 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
     private final static Logger logger = LoggerFactory.getLogger(LvchengPoetContestServiceImpl.class);
     @Autowired
     private LvchengPoetContestMapper lvchengPoetContestMapper;
+
+    @Autowired
+    private QuizAnswerMapper quizAnswerMapper;
 
     @Override
     @Transactional
@@ -82,6 +86,11 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
     }
 
     @Override
+    public List<QuizAnswer> listQuizAll() {
+        return quizAnswerMapper.selectAll();
+    }
+
+    @Override
     public InputStream exportAll() throws IOException {
         List<LvchengPoetContest> suppliers = listAll();
 
@@ -131,5 +140,21 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
                 closeable.close();
             } catch (Exception ignore){}
         }
+
+    }
+    @Override
+    public boolean existsWithPrimaryKey(String userId) {
+        return quizAnswerMapper.existsWithPrimaryKey(userId);
+    }
+
+    @Override
+    public int updateByPrimaryKey(QuizAnswer quizAnswer) {
+        quizAnswer.setCreateTime(new Date());
+        return quizAnswerMapper.updateByPrimaryKey(quizAnswer);
+    }
+
+    @Override
+    public int insert(QuizAnswer quizAnswer) {
+        return quizAnswerMapper.insert(quizAnswer);
     }
 }

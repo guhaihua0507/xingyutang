@@ -1,4 +1,4 @@
-package com.xingyutang.rongchuang.mapper;
+package com.xingyutang.lvcheng.mapper;
 
 import com.xingyutang.rongchuang.model.entity.QuizAnswer;
 import org.apache.ibatis.annotations.Mapper;
