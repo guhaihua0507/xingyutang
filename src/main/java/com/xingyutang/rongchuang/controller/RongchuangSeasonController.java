@@ -41,6 +41,17 @@ public class RongchuangSeasonController {
         }
     }
 
+    @GetMapping("/saveVoice")
+    public ResponseData saveWxVoice(@RequestParam String serverId, HttpSession session) {
+        UserVO userVO = (UserVO) session.getAttribute("user");
+        try {
+            return ResponseData.ok(seasonPlayService.saveVoice(userVO.getId(), serverId));
+        } catch (Exception e) {
+            logger.error("save weixin audio file error:", e);
+            return ResponseData.error(1, e.getMessage());
+        }
+    }
+
     @GetMapping("/myAudio")
     public ResponseEntity<InputStreamSource> getAudioFile(HttpSession session) {
         UserVO userVO = (UserVO) session.getAttribute("user");

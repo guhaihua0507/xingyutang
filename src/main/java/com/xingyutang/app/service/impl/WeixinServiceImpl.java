@@ -20,6 +20,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +112,7 @@ public class WeixinServiceImpl implements WeixinService {
     @Override
     public Map<String, String> getWxConfig(String requestURL) {
         logger.info("get wx config for jsApiTicket={}, url={}", jsApiTicket, requestURL);
-        
+
         Map<String, String> ret = new HashMap<>();
 
         String timestamp = Long.toString(System.currentTimeMillis() / 1000);
@@ -127,6 +131,23 @@ public class WeixinServiceImpl implements WeixinService {
     @Override
     public String getAppId() {
         return appId;
+    }
+
+    @Override
+    public InputStream getVoiceInputStream(String serverId) throws IOException {
+        InputStream is = null;
+        String srtUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + serverId;
+
+        URL url = new URL(srtUrl);
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+        http.setRequestMethod("GET");
+        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        http.setDoOutput(true);
+        http.setDoInput(true);
+        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");// 连接超时30秒
+        System.setProperty("sun.net.client.defaultReadTimeout", "30000"); // 读取超时30秒
+        http.connect();
+        return http.getInputStream();
     }
 
     private JSONObject get(String url) throws ParseException, IOException {

@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.print.DocFlavor;
 import javax.servlet.http.HttpSession;
-import java.net.URL;
 import java.util.Date;
 
 @Controller
@@ -35,17 +33,9 @@ public class WeixinController {
     public Object wxLogin(String code, String status, @RequestParam(required = false) String redirectUrl, HttpSession session) {
         try {
             WxUserToken token = weixinService.getUserToken(code);
-//            WxUserToken token = new WxUserToken();  //TODO remove this
-//            token.setOpenId("1111");    //TODO remove this
             User user = userService.getUserByOpenId(token.getOpenId());
             if (user == null) {
-                //TODO create user
                 WxUser wxUser = weixinService.getUserInfo(token.getAccessToken(), token.getOpenId());
-                /*WxUser wxUser = new WxUser();   //TODO remove this
-                wxUser.setOpenId("1111");
-                wxUser.setNickname("guhaihua");
-                wxUser.setSex(1);*/
-
                 user = new User();
                 user.setWxNickName(wxUser.getNickname());
                 user.setWxOpenId(wxUser.getOpenId());
@@ -79,4 +69,5 @@ public class WeixinController {
     public ResponseData wxJSConfig(@RequestParam String requestURL) {
         return ResponseData.ok(weixinService.getWxConfig(requestURL));
     }
+
 }

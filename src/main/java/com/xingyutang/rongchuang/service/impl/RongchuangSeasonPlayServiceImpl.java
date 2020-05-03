@@ -1,8 +1,10 @@
 package com.xingyutang.rongchuang.service.impl;
 
+import com.xingyutang.app.service.WeixinService;
 import com.xingyutang.rongchuang.mapper.RongchuangSeasonPlayMapper;
 import com.xingyutang.rongchuang.model.entity.RongchuangSeasonPlay;
 import com.xingyutang.rongchuang.service.RongchuangSeasonPlayService;
+import jdk.internal.util.xml.impl.Input;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import tk.mybatis.mapper.entity.Condition;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +26,8 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
     private RongchuangSeasonPlayMapper seasonPlayMapper;
     @Value("${rongchuang.season.audioPath}")
     private String audioBasePath;
+    @Autowired
+    private WeixinService weixinService;
 
     @Override
     public RongchuangSeasonPlay selectByUserId(Long userId) {
@@ -48,6 +53,31 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
         String subPath = UUID.randomUUID().toString() + "/" + file.getOriginalFilename();
         String filePath = audioBasePath + "/" + subPath;
         FileUtils.copyInputStreamToFile(file.getInputStream(), new File(filePath));
+
+        RongchuangSeasonPlay entity = selectByUserId(userId);
+        if (entity != null) {
+            entity.setAudioFile(subPath);
+            entity.setUpdateDate(new Date());
+            seasonPlayMapper.updateByPrimaryKey(entity);
+        } else {
+            entity = new RongchuangSeasonPlay();
+            entity.setUserId(userId);
+            entity.setAudioFile(subPath);
+            entity.setCreateDate(new Date());
+            entity.setUpdateDate(new Date());
+            seasonPlayMapper.insert(entity);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public RongchuangSeasonPlay saveVoice(Long userId, String serverId) throws IOException {
+        String subPath = UUID.randomUUID().toString() + "/voice.amr";
+        String filePath = audioBasePath + "/" + subPath;
+        try (InputStream in = weixinService.getVoiceInputStream(serverId)) {
+            FileUtils.copyInputStreamToFile(in, new File(filePath));
+        }
 
         RongchuangSeasonPlay entity = selectByUserId(userId);
         if (entity != null) {

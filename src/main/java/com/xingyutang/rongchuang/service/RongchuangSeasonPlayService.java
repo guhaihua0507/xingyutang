@@ -13,6 +13,8 @@ public interface RongchuangSeasonPlayService {
 
     RongchuangSeasonPlay savePlay(Long userId, MultipartFile file) throws IOException;
 
+    RongchuangSeasonPlay saveVoice(Long userId, String serverId) throws IOException;
+
     File getAudioFile(Long id);
 
     File getAudioFileByPath(String audioFile);
