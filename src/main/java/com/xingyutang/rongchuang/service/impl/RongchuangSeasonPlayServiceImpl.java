@@ -4,7 +4,6 @@ import com.xingyutang.app.service.WeixinService;
 import com.xingyutang.rongchuang.mapper.RongchuangSeasonPlayMapper;
 import com.xingyutang.rongchuang.model.entity.RongchuangSeasonPlay;
 import com.xingyutang.rongchuang.service.RongchuangSeasonPlayService;
-import jdk.internal.util.xml.impl.Input;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
