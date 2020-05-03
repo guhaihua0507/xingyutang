@@ -66,7 +66,7 @@ public class RongchuangSupplierConventionServiceImpl implements RongchuangSuppli
         logger.info("prize inited {}", prizes);
     }
 
-    @Scheduled(cron = "0 30 21 20 3 ?")
+//    @Scheduled(cron = "0 30 21 20 3 ?")
     public void initLottery() {
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
