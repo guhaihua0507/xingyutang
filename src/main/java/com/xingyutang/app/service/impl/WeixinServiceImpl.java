@@ -10,7 +10,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -135,8 +137,16 @@ public class WeixinServiceImpl implements WeixinService {
 
     @Override
     public InputStream getVoiceInputStream(String serverId) throws IOException {
-        InputStream is = null;
         String srtUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + serverId;
+
+//        HttpGet get = new HttpGet(srtUrl);
+//        get.setHeader("Content-Type", "application/x-www-form-urlencoded");
+//        CloseableHttpResponse response = httpClient.execute(get);
+//        if (ContentType.TEXT_PLAIN.getMimeType().equals(response.getEntity().getContentType().getValue())) {
+//            throw new IllegalArgumentException(EntityUtils.toString(response.getEntity()));
+//        }
+//        return response.getEntity().getContent();
+
 
         URL url = new URL(srtUrl);
         HttpURLConnection http = (HttpURLConnection) url.openConnection();

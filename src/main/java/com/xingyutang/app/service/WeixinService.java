@@ -8,13 +8,13 @@ import java.io.InputStream;
 import java.util.Map;
 
 public interface WeixinService {
-	public void refreshWxTokens() throws Exception;
+	void refreshWxTokens() throws Exception;
 	
-	public WxUserToken getUserToken(String code) throws Exception;
+	WxUserToken getUserToken(String code) throws Exception;
 
-	public WxUser getUserInfo(String accessToken, String openId) throws Exception;
+	WxUser getUserInfo(String accessToken, String openId) throws Exception;
 
-	public Map<String, String> getWxConfig(String requestURL);
+	Map<String, String> getWxConfig(String requestURL);
 
     String getAppId();
 
