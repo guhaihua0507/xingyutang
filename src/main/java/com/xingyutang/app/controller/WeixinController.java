@@ -1,6 +1,7 @@
 package com.xingyutang.app.controller;
 
 import com.xingyutang.app.model.entity.User;
+import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.app.model.vo.UserVO;
 import com.xingyutang.app.model.vo.WxUser;
 import com.xingyutang.app.model.vo.WxUserToken;
@@ -13,9 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.print.DocFlavor;
 import javax.servlet.http.HttpSession;
+import java.net.URL;
 import java.util.Date;
 
 @Controller
@@ -68,5 +72,11 @@ public class WeixinController {
             mv.setViewName("index");
         }
         return mv;
+    }
+
+    @GetMapping("/wxJSConfig")
+    @ResponseBody
+    public ResponseData wxJSConfig(@RequestParam String requestURL) {
+        return ResponseData.ok(weixinService.getWxConfig(requestURL));
     }
 }

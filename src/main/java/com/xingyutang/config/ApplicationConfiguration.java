@@ -13,6 +13,7 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
                         "/api/testToken",
                         "/api/user",
                         "/api/weixinCallback",
+                        "/api/wxJSConfig",
                         "/api/rongchuang/convention/index",
                         "/api/rongchuang/convention/suppliers",
                         "/api/rongchuang/convention/download",

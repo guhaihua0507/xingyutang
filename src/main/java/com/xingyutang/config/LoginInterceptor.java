@@ -3,6 +3,7 @@ package com.xingyutang.config;
 import com.alibaba.fastjson.JSON;
 import com.xingyutang.Application;
 import com.xingyutang.app.model.vo.ResponseData;
+import com.xingyutang.app.model.vo.UserVO;
 import com.xingyutang.app.service.WeixinService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,6 +18,18 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         HttpSession session = request.getSession();
+
+        /**
+         * TODO remove this block
+         */
+//        if (session.getAttribute("user") == null) {
+//            UserVO user = new UserVO();
+//            user.setId(1L);
+//            user.setUserName("test");
+//            user.setWxNickName("test");
+//            session.setAttribute("user", user);
+//        }
+
         if (session.getAttribute("user") == null) {
             Map<String, String> data = new HashMap<>();
             data.put("appId", Application.getBean(WeixinService.class).getAppId());

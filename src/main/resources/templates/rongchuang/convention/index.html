@@ -157,10 +157,8 @@
             doWxLogin: function (appId) {
                 var port = location.port ? ":" + location.port : "";
                 var callbackAction = location.protocol + "//" + location.hostname + port + "/api/weixinCallback?redirectUrl=" + encodeURIComponent(location.href);
-                location.href = callbackAction + "&code=12345&status=111";  //TODO for testing, delete me and uncomment below
-                // callbackAction = encodeURIComponent(callbackAction);
-                // location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId + "&redirect_uri=" + callbackAction + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-
+                callbackAction = encodeURIComponent(callbackAction);
+                location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appId + "&redirect_uri=" + callbackAction + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
             },
 
             gotoBook: function () {

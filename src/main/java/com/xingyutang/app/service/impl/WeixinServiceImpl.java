@@ -26,113 +26,113 @@ import java.util.Map;
 
 @Service
 public class WeixinServiceImpl implements WeixinService {
-	private Logger logger		= LoggerFactory.getLogger(WeixinServiceImpl.class);
-	@Value("${wx.appId}")
-	private String				appId;
-	@Value("${wx.appSecret}")
-	private String				appSecret;
-	private String				accessToken;
-	private String				jsApiTicket;
-	
-	private CloseableHttpClient	httpClient	= HttpClients.createDefault();
+    private Logger logger = LoggerFactory.getLogger(WeixinServiceImpl.class);
+    @Value("${wx.appId}")
+    private String appId;
+    @Value("${wx.appSecret}")
+    private String appSecret;
+    private String accessToken;
+    private String jsApiTicket;
 
-	private void refreshAccessToken() throws Exception {
-		String url = String.format(
-				"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%1$s&secret=%2$s", appId,
-				appSecret);
-		JSONObject jsonObject = get(url);
-		accessToken = jsonObject.getString("access_token");
-		logger.info("weixin access token: {}", accessToken);
-	}
+    private CloseableHttpClient httpClient = HttpClients.createDefault();
 
-	private void refreshJSApiTicket() throws Exception {
-		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + accessToken + "&type=jsapi";
-		JSONObject json = get(url);
-		if (json != null) {
-			jsApiTicket = json.getString("ticket");
-		}
-	}
-	
-	@Scheduled(fixedRate = 3600000)
-	public void refreshWxTokens() {
-		for (int i = 0; i < 3; i++) {
-			try {
-				logger.info("request weixin access token");
-				refreshAccessToken();
-				refreshJSApiTicket();
-				break;
-			} catch (Exception e) {
-				logger.error("Error when request weixin access token", e);
-			}
-		}
-	}
+    private void refreshAccessToken() throws Exception {
+        String url = String.format(
+                "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%1$s&secret=%2$s", appId,
+                appSecret);
+        JSONObject jsonObject = get(url);
+        accessToken = jsonObject.getString("access_token");
+        logger.info("weixin access token: {}", accessToken);
+    }
 
-	@Override
-	public WxUserToken getUserToken(String code) throws Exception {
-		String url = String.format(
-				"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%1$s&secret=%2$s&code=%3$s&grant_type=authorization_code",
-				appId, appSecret, code);
-		JSONObject jsonObject = get(url);
-		WxUserToken token = new WxUserToken();
-		token.setAccessToken(jsonObject.getString("access_token"));
-		token.setExpiresIn(jsonObject.getInteger("expires_in"));
-		token.setOpenId(jsonObject.getString("openid"));
-		return token;
-	}
+    private void refreshJSApiTicket() throws Exception {
+        String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + accessToken + "&type=jsapi";
+        JSONObject json = get(url);
+        if (json != null) {
+            jsApiTicket = json.getString("ticket");
+        }
+    }
 
-	@Override
-	public WxUser getUserInfo(String accessToken, String openId) throws Exception {
-		WxUser userInfo = null;
+    @Scheduled(fixedRate = 3600000)
+    public void refreshWxTokens() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                logger.info("request weixin access token");
+                refreshAccessToken();
+                refreshJSApiTicket();
+                break;
+            } catch (Exception e) {
+                logger.error("Error when request weixin access token", e);
+            }
+        }
+    }
 
-		String requestUrl = String.format(
-				"https://api.weixin.qq.com/sns/userinfo?access_token=%1$s&openid=%2$s&lang=zh_CN", accessToken, openId);
-		JSONObject jsonObject = get(requestUrl);
-		if (jsonObject != null) {
-			try {
-				userInfo = new WxUser();
-				userInfo.setOpenId(jsonObject.getString("openid"));
-				userInfo.setNickname(jsonObject.getString("nickname"));
-				userInfo.setSex(jsonObject.getInteger("sex"));
-				userInfo.setCountry(jsonObject.getString("country"));
-				userInfo.setProvince(jsonObject.getString("province"));
-				userInfo.setCity(jsonObject.getString("city"));
-				userInfo.setLanguage(jsonObject.getString("language"));
-				userInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
-			} catch (Exception e) {
-				throw e;
-			}
-		}
-		return userInfo;
-	}
-	
-	@Override
-	public Map<String, String> getWxConfig(String requestURL) {
-		Map<String, String> ret = new HashMap<>();
+    @Override
+    public WxUserToken getUserToken(String code) throws Exception {
+        String url = String.format(
+                "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%1$s&secret=%2$s&code=%3$s&grant_type=authorization_code",
+                appId, appSecret, code);
+        JSONObject jsonObject = get(url);
+        WxUserToken token = new WxUserToken();
+        token.setAccessToken(jsonObject.getString("access_token"));
+        token.setExpiresIn(jsonObject.getInteger("expires_in"));
+        token.setOpenId(jsonObject.getString("openid"));
+        return token;
+    }
 
-		String timestamp = Long.toString(System.currentTimeMillis() / 1000);
-		String nonceStr = RandomStringUtils.randomAlphabetic(16);
+    @Override
+    public WxUser getUserInfo(String accessToken, String openId) throws Exception {
+        WxUser userInfo = null;
 
-		String sign = "jsapi_ticket=" + jsApiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + requestURL;
-		String signature = DigestUtils.sha1Hex(sign);
-		
-		ret.put("appId", appId);
-		ret.put("timestamp", timestamp);
-		ret.put("nonceStr", nonceStr);
-		ret.put("signature", signature);
-		return ret;
-	}
+        String requestUrl = String.format(
+                "https://api.weixin.qq.com/sns/userinfo?access_token=%1$s&openid=%2$s&lang=zh_CN", accessToken, openId);
+        JSONObject jsonObject = get(requestUrl);
+        if (jsonObject != null) {
+            try {
+                userInfo = new WxUser();
+                userInfo.setOpenId(jsonObject.getString("openid"));
+                userInfo.setNickname(jsonObject.getString("nickname"));
+                userInfo.setSex(jsonObject.getInteger("sex"));
+                userInfo.setCountry(jsonObject.getString("country"));
+                userInfo.setProvince(jsonObject.getString("province"));
+                userInfo.setCity(jsonObject.getString("city"));
+                userInfo.setLanguage(jsonObject.getString("language"));
+                userInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        return userInfo;
+    }
 
-	@Override
-	public String getAppId() {
-		return appId;
-	}
+    @Override
+    public Map<String, String> getWxConfig(String requestURL) {
+        Map<String, String> ret = new HashMap<>();
 
-	private JSONObject get(String url) throws ParseException, IOException {
-		HttpGet get = new HttpGet(url);
-		CloseableHttpResponse response = httpClient.execute(get);
-		String res = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
-		JSONObject jsonObject = JSON.parseObject(res);
-		response.close();
-		return jsonObject;
-	}
+        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
+        String nonceStr = RandomStringUtils.randomAlphabetic(16);
+
+        String sign = "jsapi_ticket=" + jsApiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + requestURL;
+        String signature = DigestUtils.sha1Hex(sign);
+
+        ret.put("appId", appId);
+        ret.put("timestamp", timestamp);
+        ret.put("nonceStr", nonceStr);
+        ret.put("signature", signature);
+        return ret;
+    }
+
+    @Override
+    public String getAppId() {
+        return appId;
+    }
+
+    private JSONObject get(String url) throws ParseException, IOException {
+        HttpGet get = new HttpGet(url);
+        CloseableHttpResponse response = httpClient.execute(get);
+        String res = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
+        JSONObject jsonObject = JSON.parseObject(res);
+        response.close();
+        return jsonObject;
+    }
 }
