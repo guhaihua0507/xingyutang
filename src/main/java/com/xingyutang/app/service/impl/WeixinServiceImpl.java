@@ -137,27 +137,30 @@ public class WeixinServiceImpl implements WeixinService {
 
     @Override
     public InputStream getVoiceInputStream(String serverId) throws IOException {
-        String srtUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + serverId;
+        logger.info("start to download media file token={}, media_id={}", accessToken, serverId);
+        String strUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + serverId;
 
-//        HttpGet get = new HttpGet(srtUrl);
-//        get.setHeader("Content-Type", "application/x-www-form-urlencoded");
-//        CloseableHttpResponse response = httpClient.execute(get);
-//        if (ContentType.TEXT_PLAIN.getMimeType().equals(response.getEntity().getContentType().getValue())) {
-//            throw new IllegalArgumentException(EntityUtils.toString(response.getEntity()));
-//        }
-//        return response.getEntity().getContent();
+        logger.info("url:{}", strUrl);
+
+        HttpGet get = new HttpGet(strUrl);
+        get.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        CloseableHttpResponse response = httpClient.execute(get);
+        if (ContentType.TEXT_PLAIN.getMimeType().equals(response.getEntity().getContentType().getValue())) {
+            throw new IllegalArgumentException(EntityUtils.toString(response.getEntity()));
+        }
+        return response.getEntity().getContent();
 
 
-        URL url = new URL(srtUrl);
-        HttpURLConnection http = (HttpURLConnection) url.openConnection();
-        http.setRequestMethod("GET");
-        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        http.setDoOutput(true);
-        http.setDoInput(true);
-        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");// 连接超时30秒
-        System.setProperty("sun.net.client.defaultReadTimeout", "30000"); // 读取超时30秒
-        http.connect();
-        return http.getInputStream();
+//        URL url = new URL(srtUrl);
+//        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+//        http.setRequestMethod("GET");
+//        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//        http.setDoOutput(true);
+//        http.setDoInput(true);
+//        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");// 连接超时30秒
+//        System.setProperty("sun.net.client.defaultReadTimeout", "30000"); // 读取超时30秒
+//        http.connect();
+//        return http.getInputStream();
     }
 
     private JSONObject get(String url) throws ParseException, IOException {
