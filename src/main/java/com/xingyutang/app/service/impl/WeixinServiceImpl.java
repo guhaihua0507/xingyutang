@@ -107,6 +107,8 @@ public class WeixinServiceImpl implements WeixinService {
 
     @Override
     public Map<String, String> getWxConfig(String requestURL) {
+        logger.info("get wx config for jsApiTicket={}, url={}", jsApiTicket, requestURL);
+        
         Map<String, String> ret = new HashMap<>();
 
         String timestamp = Long.toString(System.currentTimeMillis() / 1000);
