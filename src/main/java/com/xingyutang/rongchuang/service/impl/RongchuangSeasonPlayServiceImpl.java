@@ -6,7 +6,6 @@ import com.xingyutang.rongchuang.model.entity.RongchuangSeasonPlay;
 import com.xingyutang.rongchuang.service.RongchuangSeasonPlayService;
 import it.sauronsoftware.jave.AudioAttributes;
 import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.EncodingAttributes;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;

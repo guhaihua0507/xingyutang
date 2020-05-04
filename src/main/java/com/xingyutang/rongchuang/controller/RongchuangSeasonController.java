@@ -12,6 +12,7 @@ import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +79,7 @@ public class RongchuangSeasonController {
         File file = seasonPlayService.getAudioFileByPath(play.getAudioFile());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.add("Content-Type", "audio/mpeg");
         headers.setContentDispositionFormData("attachment", file.getName());
         return ResponseEntity
                 .ok()
