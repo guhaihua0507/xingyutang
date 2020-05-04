@@ -4,6 +4,10 @@ import com.xingyutang.app.service.WeixinService;
 import com.xingyutang.rongchuang.mapper.RongchuangSeasonPlayMapper;
 import com.xingyutang.rongchuang.model.entity.RongchuangSeasonPlay;
 import com.xingyutang.rongchuang.service.RongchuangSeasonPlayService;
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,21 +76,23 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
 
     @Override
     public RongchuangSeasonPlay saveVoice(Long userId, String serverId) throws IOException {
-        String subPath = UUID.randomUUID().toString() + "/voice.amr";
-        String filePath = audioBasePath + "/" + subPath;
+        String subPath = UUID.randomUUID().toString();
+        String amrFile = audioBasePath + "/" + subPath + "/voice.amr";
+        String mp3File = audioBasePath + "/" + subPath + "/voice.mp3";
         try (InputStream in = weixinService.getVoiceInputStream(serverId)) {
-            FileUtils.copyInputStreamToFile(in, new File(filePath));
+            FileUtils.copyInputStreamToFile(in, new File(amrFile));
+            amrToMp3(new File(amrFile), new File(mp3File));
         }
 
         RongchuangSeasonPlay entity = selectByUserId(userId);
         if (entity != null) {
-            entity.setAudioFile(subPath);
+            entity.setAudioFile(subPath + "/voice.mp3");
             entity.setUpdateDate(new Date());
             seasonPlayMapper.updateByPrimaryKey(entity);
         } else {
             entity = new RongchuangSeasonPlay();
             entity.setUserId(userId);
-            entity.setAudioFile(subPath);
+            entity.setAudioFile(subPath + "/voice.mp3");
             entity.setCreateDate(new Date());
             entity.setUpdateDate(new Date());
             seasonPlayMapper.insert(entity);
@@ -108,5 +114,25 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
     @Override
     public File getAudioFileByPath(String audioFile) {
         return new File(audioBasePath + "/" + audioFile);
+    }
+
+    private void amrToMp3(File amrFile, File mp3File) {
+        AudioAttributes audio = new AudioAttributes();
+        Encoder encoder = new Encoder();
+
+        audio.setCodec("libmp3lame");
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("mp3");
+        attrs.setAudioAttributes(audio);
+        try {
+            encoder.encode(amrFile, mp3File, attrs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws EncoderException {
+        RongchuangSeasonPlayServiceImpl service = new RongchuangSeasonPlayServiceImpl();
+        service.amrToMp3(new File("C:\\Users\\Haihua\\Desktop\\test.amr"), new File("C:\\Users\\Haihua\\Desktop\\test.mp3"));
     }
 }
