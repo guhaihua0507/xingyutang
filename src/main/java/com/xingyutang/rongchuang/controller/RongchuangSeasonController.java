@@ -62,7 +62,7 @@ public class RongchuangSeasonController {
         }
         File file = seasonPlayService.getAudioFileByPath(play.getAudioFile());
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.add("Content-Type", "audio/mpeg");
         headers.setContentDispositionFormData("attachment", file.getName());
         return ResponseEntity
                 .ok()
