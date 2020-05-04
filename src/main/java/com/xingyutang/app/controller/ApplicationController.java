@@ -40,8 +40,7 @@ public class ApplicationController {
         if (user == null) {
             Map<String, String> data = new HashMap<>();
             data.put("appId", weixinService.getAppId());
-            ResponseData respData = ResponseData.error(1, "not login", data);
-            return ResponseData.error(1, "请先通过微信登录", respData);
+            return ResponseData.error(1, "请先通过微信登录", data);
         } else {
             return ResponseData.ok(user);
         }
