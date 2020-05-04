@@ -10,21 +10,28 @@ import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.EncodingAttributes;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayService {
+    private Logger logger		= LoggerFactory.getLogger(RongchuangSeasonPlayServiceImpl.class);
+
     @Autowired
     private RongchuangSeasonPlayMapper seasonPlayMapper;
     @Value("${rongchuang.season.audioPath}")
@@ -81,7 +88,7 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
         String mp3File = audioBasePath + "/" + subPath + "/voice.mp3";
         try (InputStream in = weixinService.getVoiceInputStream(serverId)) {
             FileUtils.copyInputStreamToFile(in, new File(amrFile));
-            amrToMp3(new File(amrFile), new File(mp3File));
+            amrToMp3ForLinux(amrFile, mp3File);
         }
 
         RongchuangSeasonPlay entity = selectByUserId(userId);
@@ -131,8 +138,28 @@ public class RongchuangSeasonPlayServiceImpl implements RongchuangSeasonPlayServ
         }
     }
 
-    public static void main(String[] args) throws EncoderException {
-        RongchuangSeasonPlayServiceImpl service = new RongchuangSeasonPlayServiceImpl();
-        service.amrToMp3(new File("C:\\Users\\Haihua\\Desktop\\test.amr"), new File("C:\\Users\\Haihua\\Desktop\\test.mp3"));
+    private void amrToMp3ForLinux(String amrFile, String mp3File) {
+        String command = "ffmpeg  -i " + amrFile + " " + mp3File;
+        logger.info("start to covert amr to mp3: {}", command);
+        Runtime runtime = Runtime.getRuntime();
+        BufferedReader br = null;
+        try {
+            Process proc = runtime.exec(command);
+            br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            String line = null;
+            StringBuffer sb = new StringBuffer();
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            logger.info(sb.toString());
+            int exitVal = proc.waitFor();
+            logger.info("exit value is {}", exitVal);
+        } catch (IOException e) {
+            logger.error("error when convert amr to mp3", e);
+        } catch (InterruptedException e) {
+            logger.error("ffmpeg exec cmd Exception ", e);
+        } finally {
+            IOUtils.closeQuietly(br);
+        }
     }
 }
