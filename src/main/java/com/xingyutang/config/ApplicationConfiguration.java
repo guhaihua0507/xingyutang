@@ -10,6 +10,7 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login",
+                        "/api/appId",
                         "/api/testToken",
                         "/api/user",
                         "/api/weixinCallback",

@@ -45,4 +45,10 @@ public class ApplicationController {
             return ResponseData.ok(user);
         }
     }
+
+    @GetMapping("/appId")
+    @ResponseBody
+    public ResponseData getAppId() {
+        return ResponseData.ok(weixinService.getAppId());
+    }
 }
