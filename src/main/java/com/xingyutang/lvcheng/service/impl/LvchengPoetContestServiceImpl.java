@@ -105,7 +105,6 @@ public class LvchengPoetContestServiceImpl implements LvchengPoetContestService 
             titleRow.createCell(colIndex++).setCellValue("用时");
 
             XSSFRow row;
-            XSSFCell cell;
             for (int i = 0; i < suppliers.size(); i++) {
                 row = sheet.createRow(rowIndex++);
                 LvchengPoetContest item = suppliers.get(i);
