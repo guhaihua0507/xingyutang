@@ -3,6 +3,7 @@ package com.xingyutang.qinhe.controller;
 import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,12 @@ public class QinheCultureContestController {
 
     @PostMapping("/signup")
     public ResponseData signUp(@RequestBody QinheCultureContest contest) {
+        if (StringUtils.isBlank(contest.getUserId())) {
+            return ResponseData.error(1, "没有用户id");
+        }
+        if (contest.getType() == null) {
+            return ResponseData.error(1, "没有选择比赛类型");
+        }
         return ResponseData.ok(cultureContestService.signUp(contest));
     }
 
@@ -36,9 +43,9 @@ public class QinheCultureContestController {
         return ResponseData.ok();
     }
 
-    @GetMapping("/getWorkByUserId")
-    public ResponseData getContestWorkByUserId(@RequestParam String userId) {
-        QinheCultureContest contest = cultureContestService.getContestByUserId(userId);
+    @GetMapping("/getUserWorkByType")
+    public ResponseData getContestWorkByUserId(@RequestParam String userId, @RequestParam int type) {
+        QinheCultureContest contest = cultureContestService.getContestByUserId(userId, type);
         if (contest != null) {
             contest.setFiles(cultureContestService.getContestWorkFiles(contest.getId()));
         }
