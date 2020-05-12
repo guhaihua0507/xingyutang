@@ -2,6 +2,7 @@ package com.xingyutang.qinhe.controller;
 
 import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
+import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,18 @@ public class QinheCultureContestController {
     }
 
     @PostMapping("/vote")
-    public ResponseData vote(@RequestParam Long id) {
-        cultureContestService.vote(id);
+    public ResponseData vote(@RequestBody VoteVO voteVO) {
+        QinheCultureContest contest = cultureContestService.getContestById(voteVO.getId());
+
+        int validate = cultureContestService.validateVote(voteVO.getId(), contest.getType(), voteVO.getUserId());
+        if (validate == 1) {
+            return ResponseData.error(1, "你已经投过票");
+        }
+        if (validate == 2) {
+            return ResponseData.error(1, "你已经达到投票上限");
+        }
+
+        cultureContestService.vote(voteVO.getId(), voteVO.getUserId(), contest.getType());
         return ResponseData.ok();
     }
 

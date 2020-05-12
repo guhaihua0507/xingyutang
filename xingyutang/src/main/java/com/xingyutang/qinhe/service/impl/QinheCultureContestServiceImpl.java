@@ -2,18 +2,23 @@ package com.xingyutang.qinhe.service.impl;
 
 import com.xingyutang.qinhe.mapper.QinheCultureContestMapper;
 import com.xingyutang.qinhe.mapper.QinheCultureFileMapper;
+import com.xingyutang.qinhe.mapper.QinheCultureVoteMapper;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
+import com.xingyutang.qinhe.model.entity.QinheCultureVote;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +29,8 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     private QinheCultureContestMapper cultureContestMapper;
     @Autowired
     private QinheCultureFileMapper cultureFileMapper;
+    @Autowired
+    private QinheCultureVoteMapper cultureVoteMapper;
 
     @Value("${qinhe.file.path}")
     private String basePath;
@@ -120,7 +127,36 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public void vote(Long id) {
+    @Transactional
+    public void vote(Long id, String userId, Integer type) {
+        QinheCultureVote vote = new QinheCultureVote();
+        vote.setUserId(userId);
+        vote.setContestId(id);
+        vote.setType(type);
+
+        cultureVoteMapper.insert(vote);
         cultureContestMapper.incrementVote(id);
+    }
+
+    @Override
+    public int validateVote(Long id, Integer type, String userId) {
+        Condition condition = new Condition(QinheCultureVote.class);
+        condition.createCriteria().andEqualTo("contestId", id).andEqualTo("userId", userId);
+        int count = cultureVoteMapper.selectCountByExample(condition);
+        if (count > 0) {
+            return 1;   //重复投票
+        }
+
+        Date startTime = DateUtils.truncate(new Date(), Calendar.DATE);
+        Date endTime = DateUtils.addDays(startTime, 1);
+        Condition condition2 = new Condition(QinheCultureVote.class);
+        condition2.createCriteria().andEqualTo("userId", userId)
+                .andEqualTo("type", type)
+                .andBetween("createTime", startTime, endTime);
+        int count2 = cultureVoteMapper.selectCountByExample(condition2);
+        if (count2 >= 3) {
+            return 2;   //达到投票上限
+        }
+        return 0;
     }
 }

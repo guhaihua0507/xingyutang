@@ -18,6 +18,7 @@ public class QinheCultureContest {
     private Integer age;
     private String name;
     private String gender;
+    private String city;
     private String address;
     private String company;
     private String phoneNumber;
@@ -57,6 +58,14 @@ public class QinheCultureContest {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getName() {

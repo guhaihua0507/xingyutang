@@ -24,5 +24,7 @@ public interface QinheCultureContestService {
 
     List<QinheCultureContest> listAllWorks();
 
-    void vote(Long id);
+    void vote(Long id, String userId, Integer type);
+
+    int validateVote(Long id, Integer type, String userId);
 }
