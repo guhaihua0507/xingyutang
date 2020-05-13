@@ -152,7 +152,13 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         Condition condition = new Condition(QinheCultureContest.class);
         condition.createCriteria().andEqualTo("type", type);
         condition.setOrderByClause("vote desc");
-        return cultureContestMapper.selectByExample(condition);
+        List<QinheCultureContest> dataList = cultureContestMapper.selectByExample(condition);
+        if (dataList != null) {
+            for (QinheCultureContest contest : dataList) {
+                contest.setFiles(getContestWorkFiles(contest.getId()));
+            }
+        }
+        return dataList;
     }
 
     @Override
