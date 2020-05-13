@@ -190,7 +190,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
                 .andEqualTo("type", type)
                 .andBetween("createTime", startTime, endTime);
         int count2 = cultureVoteMapper.selectCountByExample(condition2);
-        if (count2 >= 3) {
+        if (count2 >= 1) {
             return 2;   //达到投票上限
         }
         return 0;
