@@ -168,6 +168,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         vote.setUserId(userId);
         vote.setContestId(id);
         vote.setType(type);
+        vote.setCreateTime(new Date());
 
         cultureVoteMapper.insert(vote);
         cultureContestMapper.incrementVote(id);
