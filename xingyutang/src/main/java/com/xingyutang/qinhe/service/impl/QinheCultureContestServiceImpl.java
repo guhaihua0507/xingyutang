@@ -94,22 +94,45 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     @Override
     public QinheCultureFile saveWork(Long id, MultipartFile file) throws IOException {
-        QinheCultureContest contest = getContestById(id);
-        if (contest == null) {
-            throw new IllegalArgumentException("你还没有注册");
-        }
-
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String fileName = UUID.randomUUID().toString() + suffix;
         String filePath = basePath + "/" + fileName;
         FileUtils.copyInputStreamToFile(file.getInputStream(), new File(filePath));
 
         QinheCultureFile workFile = new QinheCultureFile();
-        workFile.setContestId(contest.getId());
+        workFile.setContestId(id);
         workFile.setFile(fileName);
+        workFile.setContentType(file.getContentType());
         workFile.setCreateTime(new Date());
         cultureFileMapper.insert(workFile);
         return workFile;
+    }
+
+    @Override
+    @Transactional
+    public void updateWorkFiles(Long id, MultipartFile[] files) throws IOException {
+        QinheCultureContest contest = getContestById(id);
+        if (contest == null) {
+            throw new IllegalArgumentException("你还没有注册");
+        }
+
+        Condition condition = new Condition(QinheCultureFile.class);
+        condition.createCriteria().andEqualTo("contestId", id);
+        cultureFileMapper.deleteByExample(condition);
+
+        for (MultipartFile file : files) {
+            saveWork(id, file);
+        }
+    }
+
+    @Override
+    public QinheCultureFile getCultureFileById(Long id) {
+        return cultureFileMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public File getFile(QinheCultureFile cultureFile) {
+        return new File(basePath + "/" + cultureFile.getFile());
     }
 
     @Override
@@ -121,9 +144,15 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     @Override
     public List<QinheCultureContest> listAllWorks() {
-        Condition condition = new Condition(QinheCultureContest.class);
-        condition.setOrderByClause("vote desc");
         return cultureContestMapper.selectAll();
+    }
+
+    @Override
+    public List<QinheCultureContest> listRankingByType(int type) {
+        Condition condition = new Condition(QinheCultureContest.class);
+        condition.createCriteria().andEqualTo("type", type);
+        condition.setOrderByClause("vote desc");
+        return cultureContestMapper.selectByExample(condition);
     }
 
     @Override

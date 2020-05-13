@@ -13,6 +13,7 @@ public class QinheCultureFile {
     private Long id;
     private Long contestId;
     private String file;
+    private String contentType;
     private Date createTime;
 
     public Long getId() {
@@ -45,5 +46,13 @@ public class QinheCultureFile {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

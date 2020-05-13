@@ -2,10 +2,15 @@ package com.xingyutang.qinhe.controller;
 
 import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
+import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -38,9 +44,11 @@ public class QinheCultureContestController {
         if (files == null || files.length == 0) {
             return ResponseData.error(1, "没有文件上传");
         }
-        for (MultipartFile file : files) {
+        /*for (MultipartFile file : files) {
+            System.out.println(file.getContentType());
             cultureContestService.saveWork(id, file);
-        }
+        }*/
+        cultureContestService.updateWorkFiles(id, files);
         return ResponseData.ok();
     }
 
@@ -79,7 +87,22 @@ public class QinheCultureContestController {
     }
 
     @GetMapping("/rankingList")
-    public ResponseData list() {
-        return ResponseData.ok(cultureContestService.listAllWorks());
+    public ResponseData list(@RequestParam int type) {
+        return ResponseData.ok(cultureContestService.listRankingByType(type));
+    }
+
+    @GetMapping("/file")
+    public ResponseEntity<InputStreamSource> getAudioFileByUserId(@RequestParam Long id) {
+        QinheCultureFile cultureFile = cultureContestService.getCultureFileById(id);
+        if (cultureFile == null) {
+            return null;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", cultureFile.getContentType());
+        headers.setContentDispositionFormData("attachment", cultureFile.getFile());
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new FileSystemResource(cultureContestService.getFile(cultureFile)));
     }
 }
