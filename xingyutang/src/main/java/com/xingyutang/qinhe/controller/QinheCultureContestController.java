@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import com.github.pagehelper.PageHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,8 +88,11 @@ public class QinheCultureContestController {
     }
 
     @GetMapping("/rankingList")
-    public ResponseData list(@RequestParam int type) {
-        return ResponseData.ok(cultureContestService.listRankingByType(type));
+    public ResponseData list(@RequestParam int type, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<QinheCultureContest> dataList = cultureContestService.listRankingByType(type);
+        PageHelper.clearPage();
+        return ResponseData.ok(dataList);
     }
 
     @GetMapping("/file")
