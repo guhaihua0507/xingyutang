@@ -38,7 +38,14 @@ public class QinheCultureContestController {
         if (contest.getType() == null) {
             return ResponseData.error(1, "没有选择比赛类型");
         }
-        return ResponseData.ok(cultureContestService.signUp(contest));
+        QinheCultureContest entity = cultureContestService.getContestByUserId(userId, type);
+        if (contest == null) {
+            return ResponseData.ok(cultureContestService.signUp(contest));
+        } else {
+            contest.setId(entity.getId());
+            contest.setVote(entity.getVote());
+            return ResponseData.ok(cultureContestService.updateSignInfo(contest));
+        }
     }
 
     @PostMapping("/upload")
