@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface QinheCultureContestService {
@@ -38,4 +39,6 @@ public interface QinheCultureContestService {
     void updateWorkFiles(Long id, MultipartFile[] files) throws IOException;
 
     QinheCultureFile getCultureFileById(Long id);
+
+    InputStream exportAll() throws IOException;
 }

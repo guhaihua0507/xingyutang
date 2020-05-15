@@ -7,8 +7,13 @@ import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.entity.QinheCultureVote;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
+import com.xingyutang.rongchuang.model.vo.LifeQuestionResultVo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,8 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -202,5 +211,84 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             return 2;   //达到投票上限
         }
         return 0;
+    }
+
+    @Override
+    public InputStream exportAll() throws IOException {
+        List<QinheCultureContest> dataList = listAllWorks();
+
+        try (XSSFWorkbook wb = new XSSFWorkbook()) {
+            XSSFSheet sheet = wb.createSheet();
+            int rowIndex = 0;
+            int colIndex = 0;
+            XSSFRow titleRow = sheet.createRow(rowIndex++);
+
+            titleRow.createCell(colIndex++).setCellValue("序号");
+            titleRow.createCell(colIndex++).setCellValue("参赛活动");
+            titleRow.createCell(colIndex++).setCellValue("姓名");
+            titleRow.createCell(colIndex++).setCellValue("性别");
+            titleRow.createCell(colIndex++).setCellValue("年龄");
+            titleRow.createCell(colIndex++).setCellValue("所在小区/工作单位/公司名称");
+            titleRow.createCell(colIndex++).setCellValue("联系电话");
+            titleRow.createCell(colIndex++).setCellValue("作品名称");
+            titleRow.createCell(colIndex++).setCellValue("得票");
+
+            XSSFRow row;
+            for (int i = 0; i < dataList.size(); i++) {
+                row = sheet.createRow(rowIndex++);
+                QinheCultureContest item = dataList.get(i);
+                int j = 0;
+                row.createCell(j++).setCellValue(String.valueOf(i + 1));
+                row.createCell(j++).setCellValue(getContestNameByType(item.getType()));
+                row.createCell(j++).setCellValue(item.getName());
+                row.createCell(j++).setCellValue(item.getGender());
+                row.createCell(j++).setCellValue(item.getAge());
+                row.createCell(j++).setCellValue(Integer.valueOf(1).equals(item.getPlayerType()) ? item.getAddress() : item.getCompany());
+                row.createCell(j++).setCellValue(item.getPhoneNumber());
+                row.createCell(j++).setCellValue(item.getWorkName());
+                row.createCell(j++).setCellValue(item.getVote());
+            }
+            return exportAsInputStream(wb);
+        }
+    }
+
+    private String getContestNameByType(Integer type) {
+        if (type == null) {
+            return null;
+        }
+        if (type == 1) {
+            return "美术书法大赛";
+        }
+        if (type == 2) {
+            return "小小演说家";
+        }
+        if (type == 3) {
+            return "诗词朗诵";
+        }
+        return null;
+
+    }
+
+    private InputStream exportAsInputStream(Workbook wb) {
+        ByteArrayOutputStream out = null;
+        try {
+            out = new ByteArrayOutputStream();
+            wb.write(out);
+            InputStream in = new ByteArrayInputStream(out.toByteArray());
+            return in;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            closeQuietly(out);
+        }
+    }
+
+    private void closeQuietly(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception ignore){}
+        }
     }
 }

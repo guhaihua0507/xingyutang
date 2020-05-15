@@ -8,8 +8,10 @@ import com.xingyutang.qinhe.service.QinheCultureContestService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -116,5 +118,22 @@ public class QinheCultureContestController {
                 .ok()
                 .headers(headers)
                 .body(new FileSystemResource(cultureContestService.getFile(cultureFile)));
+    }
+
+    @GetMapping("/listAll")
+    public ResponseData list() {
+        List<QinheCultureContest> dataList = cultureContestService.listAllWorks();
+        return ResponseData.ok(dataList);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<InputStreamSource> download() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "list.xlsx");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(cultureContestService.exportAll()));
     }
 }
