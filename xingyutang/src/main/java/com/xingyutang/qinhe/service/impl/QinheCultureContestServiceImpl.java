@@ -215,15 +215,12 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     @Override
     public List<QinheCultureContest> listAllWorks() {
-        return cultureContestMapper.selectAll();
+        return cultureContestMapper.selectAllWorks();
     }
 
     @Override
     public List<QinheCultureContest> listRankingByType(int type) {
-        Condition condition = new Condition(QinheCultureContest.class);
-        condition.createCriteria().andEqualTo("type", type);
-        condition.setOrderByClause("vote desc");
-        List<QinheCultureContest> dataList = cultureContestMapper.selectByExample(condition);
+        List<QinheCultureContest> dataList = cultureContestMapper.selectRankingListByType(type);
         if (dataList != null) {
             for (QinheCultureContest contest : dataList) {
                 contest.setFiles(getContestWorkFiles(contest.getId()));
