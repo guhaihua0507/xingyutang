@@ -48,6 +48,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     public QinheCultureContest updateSignInfo(QinheCultureContest contest) {
         contest.setCreateTime(new Date());
         cultureContestMapper.updateByPrimaryKey(contest);
+        return contest;
     }
 
     @Override

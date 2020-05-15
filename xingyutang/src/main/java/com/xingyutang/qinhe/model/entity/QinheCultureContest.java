@@ -15,6 +15,7 @@ public class QinheCultureContest {
     private Long id;
     private String userId;
     private Integer type;   //1 - 美术书法， 2 - 小小演说家, 3 - 诗词朗诵
+    private Integer playerType;
     private Integer age;
     private String name;
     private String gender;
@@ -138,5 +139,13 @@ public class QinheCultureContest {
 
     public void setFiles(List<QinheCultureFile> files) {
         this.files = files;
+    }
+
+    public Integer getPlayerType() {
+        return playerType;
+    }
+
+    public void setPlayerType(Integer playerType) {
+        this.playerType = playerType;
     }
 }

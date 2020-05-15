@@ -38,7 +38,7 @@ public class QinheCultureContestController {
         if (contest.getType() == null) {
             return ResponseData.error(1, "没有选择比赛类型");
         }
-        QinheCultureContest entity = cultureContestService.getContestByUserId(userId, type);
+        QinheCultureContest entity = cultureContestService.getContestByUserId(contest.getUserId(), contest.getType());
         if (contest == null) {
             return ResponseData.ok(cultureContestService.signUp(contest));
         } else {
