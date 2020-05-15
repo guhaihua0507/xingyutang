@@ -106,7 +106,7 @@ public class QinheCultureContestController {
     }
 
     @GetMapping("/file")
-    public ResponseEntity<InputStreamSource> getAudioFileByUserId(@RequestParam Long id) {
+    public ResponseEntity<InputStreamSource> getFileByUserId(@RequestParam Long id) {
         QinheCultureFile cultureFile = cultureContestService.getCultureFileById(id);
         if (cultureFile == null) {
             return null;
@@ -118,6 +118,21 @@ public class QinheCultureContestController {
                 .ok()
                 .headers(headers)
                 .body(new FileSystemResource(cultureContestService.getFile(cultureFile)));
+    }
+
+    @GetMapping("/thumb_file")
+    public ResponseEntity<InputStreamSource> getThumbFileByUserId(@RequestParam Long id) {
+        QinheCultureFile cultureFile = cultureContestService.getCultureFileById(id);
+        if (cultureFile == null) {
+            return null;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", cultureFile.getContentType());
+        headers.setContentDispositionFormData("attachment", cultureFile.getFile());
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new FileSystemResource(cultureContestService.getThumbFile(cultureFile)));
     }
 
     @GetMapping("/listAll")

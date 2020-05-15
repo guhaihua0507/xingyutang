@@ -41,4 +41,6 @@ public interface QinheCultureContestService {
     QinheCultureFile getCultureFileById(Long id);
 
     InputStream exportAll() throws IOException;
+
+    File getThumbFile(QinheCultureFile cultureFile);
 }

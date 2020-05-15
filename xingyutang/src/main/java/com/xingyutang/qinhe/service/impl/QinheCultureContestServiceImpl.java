@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -34,6 +40,8 @@ import java.util.UUID;
 
 @Service
 public class QinheCultureContestServiceImpl implements QinheCultureContestService {
+    private final static Logger logger = LoggerFactory.getLogger(QinheCultureContestServiceImpl.class);
+
     @Autowired
     private QinheCultureContestMapper cultureContestMapper;
     @Autowired
@@ -114,7 +122,14 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String fileName = UUID.randomUUID().toString() + suffix;
         String filePath = basePath + "/" + fileName;
-        FileUtils.copyInputStreamToFile(file.getInputStream(), new File(filePath));
+        File _file = new File(filePath);
+        FileUtils.copyInputStreamToFile(file.getInputStream(), _file);
+
+        String contentType = file.getContentType();
+
+        if (contentType != null && contentType.matches("^image/.*$")) {
+            generateThumb(_file, fileName);
+        }
 
         QinheCultureFile workFile = new QinheCultureFile();
         workFile.setContestId(id);
@@ -123,6 +138,36 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         workFile.setCreateTime(new Date());
         cultureFileMapper.insert(workFile);
         return workFile;
+    }
+
+    private void generateThumb(File file, String name) {
+        try {
+            BufferedImage bi = ImageIO.read(new FileInputStream(file));
+            int width = bi.getWidth();
+            int height = bi.getHeight();
+
+            double scaleWidth = 180.0 / bi.getWidth();
+            double scaleHeight = 226.0 / bi.getHeight();
+
+            double scale = Math.max(scaleWidth, scaleHeight);
+
+            width = (int) (width * scale);
+            height = (int) (height * scale);
+
+            Image img2 = bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            BufferedImage tag = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+            Graphics g = tag.getGraphics();
+            g.setColor(Color.RED);
+            g.drawImage(img2, 0, 0, null);
+            g.dispose();
+
+            String thumbFilePath = basePath + "/thumb/" + name;
+            new File(thumbFilePath).mkdirs();
+            ImageIO.write(tag, "JPEG", new File(thumbFilePath));
+        } catch (Exception e) {
+            logger.error("generate thumb error ", e);
+        }
     }
 
     @Override
@@ -150,6 +195,15 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     @Override
     public File getFile(QinheCultureFile cultureFile) {
         return new File(basePath + "/" + cultureFile.getFile());
+    }
+
+    @Override
+    public File getThumbFile(QinheCultureFile cultureFile) {
+        File file = new File(basePath + "/thumb/" + cultureFile.getFile());
+        if (!file.exists()) {
+            return getFile(cultureFile);
+        }
+        return file;
     }
 
     @Override
