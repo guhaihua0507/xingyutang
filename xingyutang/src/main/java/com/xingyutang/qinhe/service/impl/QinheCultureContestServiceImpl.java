@@ -297,7 +297,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
                 row.createCell(j++).setCellValue(item.getName());
                 row.createCell(j++).setCellValue(item.getGender());
                 row.createCell(j++).setCellValue(item.getAge());
-                row.createCell(j++).setCellValue(Integer.valueOf(1).equals(item.getPlayerType()) ? item.getAddress() : item.getCompany());
+                row.createCell(j++).setCellValue(item.getAddress());
                 row.createCell(j++).setCellValue(item.getPhoneNumber());
                 row.createCell(j++).setCellValue(item.getWorkName());
                 row.createCell(j++).setCellValue(item.getVote());
