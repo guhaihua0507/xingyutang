@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface QinheCultureContestService {
     QinheCultureContest signUp(QinheCultureContest contest);
+    
+    QinheCultureContest updateSignInfo(QinheCultureContest contest);
 
     QinheCultureContest getContestByUserId(String userId, int type);
 
