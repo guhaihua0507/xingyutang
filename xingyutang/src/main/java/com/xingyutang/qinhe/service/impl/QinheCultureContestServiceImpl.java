@@ -42,6 +42,13 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         cultureContestMapper.insert(contest);
         return contest;
     }
+    
+    @Override
+    @Transactional
+    public QinheCultureContest updateSignInfo(QinheCultureContest contest) {
+        contest.setCreateTime(new Date());
+        cultureContestMapper.updateByExample(contest);
+    }
 
     @Override
     public QinheCultureContest getContestByUserId(String userId, int type) {
