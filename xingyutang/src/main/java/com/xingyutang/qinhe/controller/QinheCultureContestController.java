@@ -6,6 +6,7 @@ import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -161,5 +163,10 @@ public class QinheCultureContestController {
     @GetMapping("/refreshThumb")
     public ResponseData refreshThumb() {
         return ResponseData.ok(cultureContestService.generateAllThumbs());
+    }
+
+    @GetMapping("/compressImages")
+    public ResponseData compressAllImages() {
+        return ResponseData.ok(cultureContestService.compressAllImages());
     }
 }

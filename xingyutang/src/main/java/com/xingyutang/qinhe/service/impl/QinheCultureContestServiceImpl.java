@@ -8,6 +8,7 @@ import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.entity.QinheCultureVote;
 import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,15 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -131,7 +127,9 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
         if (contentType != null && contentType.matches("^image/.*$")) {
             generateThumb(_file, fileName);
+            compressImageFile(_file);
         }
+
 
         QinheCultureFile workFile = new QinheCultureFile();
         workFile.setContestId(id);
@@ -144,29 +142,14 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     private void generateThumb(File file, String name) {
         try {
-            BufferedImage bi = ImageIO.read(new FileInputStream(file));
-            int width = bi.getWidth();
-            int height = bi.getHeight();
-
-            double scaleWidth = 180.0 / bi.getWidth();
-            double scaleHeight = 226.0 / bi.getHeight();
-
-            double scale = Math.max(scaleWidth, scaleHeight);
-
-            width = (int) (width * scale);
-            height = (int) (height * scale);
-
-            Image img2 = bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            BufferedImage tag = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-            Graphics g = tag.getGraphics();
-            g.setColor(Color.RED);
-            g.drawImage(img2, 0, 0, null);
-            g.dispose();
-
-            String thumbFilePath = basePath + "/thumb/" + name;
+            String thumbFilePath = basePath + "/thumb";
             new File(thumbFilePath).mkdirs();
-            ImageIO.write(tag, "JPEG", new File(thumbFilePath));
+
+            Thumbnails.of(file)
+                    .size(300, 300)
+                    .outputQuality(0.5f)
+                    .toFile(thumbFilePath + "/" + name);
+
         } catch (Exception e) {
             logger.error("generate thumb error for file {}", name, e);
         }
@@ -385,5 +368,36 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         }
 
         return fileList;
+    }
+
+    @Override
+    public List<String> compressAllImages() {
+        List<String> fileList = new ArrayList<>();
+        File dir = new File(basePath);
+        File[] files = dir.listFiles((file, s) -> {
+            String name = s.toLowerCase();
+            return name.matches("^.*\\.((jpg)|(jpeg)|(png))$");
+        });
+
+        if (files != null) {
+            for (File f : files) {
+                logger.info("compress image {}", f.getName());
+                compressImageFile(f);
+                fileList.add(f.getName());
+            }
+        }
+        return fileList;
+    }
+
+
+    private void compressImageFile(File imageFile) {
+        try {
+            Thumbnails.of(imageFile)
+                    .scale(1.0)
+                    .outputQuality(0.5f)
+                    .toFile(imageFile);
+        } catch (Exception e) {
+            logger.error("compress image error: {}", imageFile.getName(), e);
+        }
     }
 }
