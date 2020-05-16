@@ -6,8 +6,8 @@ import com.xingyutang.qinhe.mapper.QinheCultureVoteMapper;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.entity.QinheCultureVote;
+import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
-import com.xingyutang.rongchuang.model.vo.LifeQuestionResultVo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -219,14 +219,19 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public List<QinheCultureContest> listRankingByType(int type) {
-        List<QinheCultureContest> dataList = cultureContestMapper.selectRankingListByType(type);
+    public List<QinheCultureContest> listWorksByType(int type) {
+        List<QinheCultureContest> dataList = cultureContestMapper.selectWorksByType(type);
         if (dataList != null) {
             for (QinheCultureContest contest : dataList) {
                 contest.setFiles(getContestWorkFiles(contest.getId()));
             }
         }
         return dataList;
+    }
+
+    @Override
+    public List<RankingVO> listRankingByType(int type, int top) {
+        return cultureContestMapper.selectRankingByType(type, top);
     }
 
     @Override
@@ -279,6 +284,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             titleRow.createCell(colIndex++).setCellValue("姓名");
             titleRow.createCell(colIndex++).setCellValue("性别");
             titleRow.createCell(colIndex++).setCellValue("年龄");
+            titleRow.createCell(colIndex++).setCellValue("参赛通道");
             titleRow.createCell(colIndex++).setCellValue("所在小区/工作单位/公司名称");
             titleRow.createCell(colIndex++).setCellValue("联系电话");
             titleRow.createCell(colIndex++).setCellValue("作品名称");
@@ -294,6 +300,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
                 row.createCell(j++).setCellValue(item.getName());
                 row.createCell(j++).setCellValue(item.getGender());
                 row.createCell(j++).setCellValue(item.getAge());
+                row.createCell(j++).setCellValue(getContestChannel(item.getPlayerType()));
                 row.createCell(j++).setCellValue(item.getAddress());
                 row.createCell(j++).setCellValue(item.getPhoneNumber());
                 row.createCell(j++).setCellValue(item.getWorkName());
@@ -317,7 +324,22 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             return "诗词朗诵";
         }
         return null;
+    }
 
+    private String getContestChannel(Integer playerType) {
+        if (playerType == null) {
+            return null;
+        }
+        if (playerType == 1) {
+            return "业主";
+        }
+        if (playerType == 2) {
+            return "员工";
+        }
+        if (playerType == 3) {
+            return "媒体";
+        }
+        return null;
     }
 
     private InputStream exportAsInputStream(Workbook wb) {

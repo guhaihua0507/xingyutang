@@ -2,6 +2,7 @@ package com.xingyutang.qinhe.service;
 
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
+import com.xingyutang.qinhe.model.vo.RankingVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public interface QinheCultureContestService {
 
     int validateVote(Long id, Integer type, String userId);
 
-    List<QinheCultureContest> listRankingByType(int type);
+    List<QinheCultureContest> listWorksByType(int type);
 
     void updateWorkFiles(Long id, MultipartFile[] files) throws IOException;
 
@@ -43,4 +44,6 @@ public interface QinheCultureContestService {
     InputStream exportAll() throws IOException;
 
     File getThumbFile(QinheCultureFile cultureFile);
+
+    List<RankingVO> listRankingByType(int type, int top);
 }

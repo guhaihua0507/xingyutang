@@ -27,6 +27,7 @@
                     <th scope="col">姓名</th>
                     <th scope="col">性别</th>
                     <th scope="col">年龄</th>
+                    <th scope="col">参赛通道</th>
                     <th scope="col">所在小区/工作单位/公司名称</th>
                     <th scope="col">联系电话</th>
                     <th scope="col">作品名称</th>
@@ -40,6 +41,7 @@
                     <td>{{item.name}}</td>
                     <td>{{item.gender}}</td>
                     <td>{{item.age}}</td>
+                    <td>{{getContestChannel(item.playerType)}}</td>
                     <td>{{item.address||item.company}}</td>
                     <td>{{item.phoneNumber}}</td>
                     <td>{{item.workName}}</td>
@@ -93,6 +95,18 @@
                 }
                 if (type == 3) {
                     return "诗词朗诵";
+                }
+                return null;
+            },
+            getContestChannel: function(playerType) {
+                if (playerType == 1) {
+                    return "业主";
+                }
+                if (playerType == 2) {
+                    return "员工";
+                }
+                if (playerType == 3) {
+                    return "媒体";
                 }
                 return null;
             }

@@ -3,6 +3,7 @@ package com.xingyutang.qinhe.controller;
 import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
+import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageHelper;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -97,11 +97,17 @@ public class QinheCultureContestController {
         return ResponseData.ok();
     }
 
-    @GetMapping("/rankingList")
-    public ResponseData list(@RequestParam int type, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+    @GetMapping("/workList")
+    public ResponseData listWorks(@RequestParam int type, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
         PageHelper.startPage(pageNo, pageSize);
-        List<QinheCultureContest> dataList = cultureContestService.listRankingByType(type);
+        List<QinheCultureContest> dataList = cultureContestService.listWorksByType(type);
         PageHelper.clearPage();
+        return ResponseData.ok(dataList);
+    }
+
+    @GetMapping("/ranking")
+    public ResponseData listRanking(@RequestParam int type, @RequestParam(defaultValue = "10") int top) {
+        List<RankingVO> dataList = cultureContestService.listRankingByType(type, top);
         return ResponseData.ok(dataList);
     }
 
