@@ -52,6 +52,14 @@ public class QinheCultureContestController {
         }
     }
 
+    @GetMapping("/searchWork")
+    public ResponseData searchWork(@RequestParam(required = false) String name, @RequestParam(required = false) String phoneNumber) {
+        if (StringUtils.isBlank(name) && StringUtils.isBlank(phoneNumber)) {
+            return ResponseData.error(1, "请输入姓名或者手机号查询");
+        }
+        return ResponseData.ok(cultureContestService.searchWork(name, phoneNumber));
+    }
+
     @PostMapping("/upload")
     public ResponseData uploadWork(@RequestParam("file") MultipartFile[] files, @RequestParam("id") Long id) throws IOException {
         if (files == null || files.length == 0) {

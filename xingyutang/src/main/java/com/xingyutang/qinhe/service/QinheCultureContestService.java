@@ -50,4 +50,6 @@ public interface QinheCultureContestService {
     List<String> generateAllThumbs();
 
     List<String> compressAllImages();
+
+    List<QinheCultureContest> searchWork(String name, String phoneNumber);
 }
