@@ -160,6 +160,6 @@ public class QinheCultureContestController {
 
     @GetMapping("/refreshThumb")
     public ResponseData refreshThumb() {
-        return ResponseData.ok(cultureContestService.generatAllThumbs());
+        return ResponseData.ok(cultureContestService.generateAllThumbs());
     }
 }

@@ -168,7 +168,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             new File(thumbFilePath).mkdirs();
             ImageIO.write(tag, "JPEG", new File(thumbFilePath));
         } catch (Exception e) {
-            logger.error("generate thumb error ", e);
+            logger.error("generate thumb error for file {}", name, e);
         }
     }
 
@@ -368,7 +368,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public List<String> generatAllThumbs() {
+    public List<String> generateAllThumbs() {
         List<String> fileList = new ArrayList<>();
         File dir = new File(basePath);
         File[] files = dir.listFiles((file, s) -> {
@@ -378,26 +378,12 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
         if (files != null) {
             for (File f : files) {
+                logger.info("generating thumb for {}", f.getName());
                 generateThumb(f, f.getName());
                 fileList.add(f.getName());
             }
         }
 
         return fileList;
-    }
-
-    public static void main(String[] args) {
-        File dir = new File("/xingyutang/qinhe");
-        File[] files = dir.listFiles((file, s) -> {
-            String name = s.toLowerCase();
-            System.out.println(name);
-            if (name.matches("^.*\\.((jpg)|(jpeg)|(png))$")) {
-                System.out.println("=======" + true);
-                return true;
-            } else {
-                System.out.println("=======" + false);
-                return false;
-            }
-        });
     }
 }

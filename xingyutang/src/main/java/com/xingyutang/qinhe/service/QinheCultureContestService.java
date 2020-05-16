@@ -47,5 +47,5 @@ public interface QinheCultureContestService {
 
     List<RankingVO> listRankingByType(int type, int top);
 
-    List<String> generatAllThumbs();
+    List<String> generateAllThumbs();
 }
