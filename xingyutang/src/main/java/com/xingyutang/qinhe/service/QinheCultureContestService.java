@@ -52,4 +52,6 @@ public interface QinheCultureContestService {
     List<String> compressAllImages();
 
     List<QinheCultureContest> searchWork(String name, String phoneNumber);
+
+    void loadWorkFiles(List<QinheCultureContest> contestList);
 }

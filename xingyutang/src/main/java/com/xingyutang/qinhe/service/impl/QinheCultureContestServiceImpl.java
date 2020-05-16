@@ -208,11 +208,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     @Override
     public List<QinheCultureContest> listWorksByType(int type) {
         List<QinheCultureContest> dataList = cultureContestMapper.selectWorksByType(type);
-        if (dataList != null) {
-            for (QinheCultureContest contest : dataList) {
-                contest.setFiles(getContestWorkFiles(contest.getId()));
-            }
-        }
+        loadWorkFiles(dataList);
         return dataList;
     }
 
@@ -404,6 +400,14 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         return cultureContestMapper.selectByExample(condition);
     }
 
+    @Override
+    public void loadWorkFiles(List<QinheCultureContest> contestList) {
+        if (contestList != null) {
+            for (QinheCultureContest contest : contestList) {
+                contest.setFiles(getContestWorkFiles(contest.getId()));
+            }
+        }
+    }
 
     private void compressImageFile(File imageFile) {
         try {

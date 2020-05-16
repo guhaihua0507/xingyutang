@@ -57,7 +57,10 @@ public class QinheCultureContestController {
         if (StringUtils.isBlank(name) && StringUtils.isBlank(phoneNumber)) {
             return ResponseData.error(1, "请输入姓名或者手机号查询");
         }
-        return ResponseData.ok(cultureContestService.searchWork(name, phoneNumber));
+        List<QinheCultureContest> dataList = cultureContestService.searchWork(name, phoneNumber);
+        cultureContestService.loadWorkFiles(dataList);
+
+        return ResponseData.ok(dataList);
     }
 
     @PostMapping("/upload")
