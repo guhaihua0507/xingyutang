@@ -157,4 +157,9 @@ public class QinheCultureContestController {
                 .headers(headers)
                 .body(new InputStreamResource(cultureContestService.exportAll()));
     }
+
+    @GetMapping("/refreshThumb")
+    public ResponseData refreshThumb() {
+        return ResponseData.ok(cultureContestService.generatAllThumbs());
+    }
 }

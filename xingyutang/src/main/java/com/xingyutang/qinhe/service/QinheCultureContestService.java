@@ -46,4 +46,6 @@ public interface QinheCultureContestService {
     File getThumbFile(QinheCultureFile cultureFile);
 
     List<RankingVO> listRankingByType(int type, int top);
+
+    List<String> generatAllThumbs();
 }

@@ -31,8 +31,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -363,5 +365,39 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
                 closeable.close();
             } catch (Exception ignore){}
         }
+    }
+
+    @Override
+    public List<String> generatAllThumbs() {
+        List<String> fileList = new ArrayList<>();
+        File dir = new File(basePath);
+        File[] files = dir.listFiles((file, s) -> {
+            String name = s.toLowerCase();
+            return name.matches("^.*\\.((jpg)|(jpeg)|(png))$");
+        });
+
+        if (files != null) {
+            for (File f : files) {
+                generateThumb(f, f.getName());
+                fileList.add(f.getName());
+            }
+        }
+
+        return fileList;
+    }
+
+    public static void main(String[] args) {
+        File dir = new File("/xingyutang/qinhe");
+        File[] files = dir.listFiles((file, s) -> {
+            String name = s.toLowerCase();
+            System.out.println(name);
+            if (name.matches("^.*\\.((jpg)|(jpeg)|(png))$")) {
+                System.out.println("=======" + true);
+                return true;
+            } else {
+                System.out.println("=======" + false);
+                return false;
+            }
+        });
     }
 }
