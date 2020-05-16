@@ -16,7 +16,7 @@ public interface QinheCultureContestMapper extends tk.mybatis.mapper.common.Mapp
     @Select("SELECT * FROM t_qinhe_culture_contest t " +
             " WHERE type = #{type} " +
             "   AND exists (SELECT 1 FROM t_qinhe_culture_file f WHERE f.contest_id = t.id) " +
-            " order by t.vote desc ")
+            " order by t.id ")
     List<QinheCultureContest> selectWorksByType(int type);
 
     @Select("SELECT * FROM t_qinhe_culture_contest t " +
