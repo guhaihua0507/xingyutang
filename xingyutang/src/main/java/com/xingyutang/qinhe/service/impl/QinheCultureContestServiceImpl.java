@@ -317,10 +317,10 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             return "业主";
         }
         if (playerType == 2) {
-            return "员工";
+            return "媒体";
         }
         if (playerType == 3) {
-            return "媒体";
+            return "员工";
         }
         return null;
     }
