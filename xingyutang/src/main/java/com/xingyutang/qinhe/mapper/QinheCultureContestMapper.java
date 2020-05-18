@@ -24,8 +24,9 @@ public interface QinheCultureContestMapper extends tk.mybatis.mapper.common.Mapp
     List<QinheCultureContest> selectAllWorks();
 
     @Select("select id, user_id, name, work_name, vote " +
-            "  from t_qinhe_culture_contest " +
+            "  from t_qinhe_culture_contest t" +
             "  where type = #{type} " +
+            "    and exists (SELECT 1 FROM t_qinhe_culture_file f WHERE f.contest_id = t.id) " +
             " order by vote desc " +
             " limit #{num}")
     List<RankingVO> selectRankingByType(int type, int num);
