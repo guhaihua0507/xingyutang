@@ -27,11 +27,13 @@
                     <th scope="col">姓名</th>
                     <th scope="col">性别</th>
                     <th scope="col">年龄</th>
+                    <th scope="col">城市</th>
                     <th scope="col">参赛通道</th>
                     <th scope="col">所在小区/工作单位/公司名称</th>
                     <th scope="col">联系电话</th>
                     <th scope="col">作品名称</th>
                     <th scope="col">得票</th>
+                    <th scope="col">创建时间</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,11 +43,13 @@
                     <td>{{item.name}}</td>
                     <td>{{item.gender}}</td>
                     <td>{{item.age}}</td>
+                    <td>{{item.city}}</td>
                     <td>{{getContestChannel(item.playerType)}}</td>
                     <td>{{item.address||item.company}}</td>
                     <td>{{item.phoneNumber}}</td>
                     <td>{{item.workName}}</td>
                     <td>{{item.vote}}</td>
+                    <td>{{item.createTime}}</td>
                 </tr>
                 </tbody>
             </table>

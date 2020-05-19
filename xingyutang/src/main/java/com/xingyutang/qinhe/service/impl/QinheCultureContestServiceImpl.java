@@ -11,6 +11,7 @@ import com.xingyutang.qinhe.service.QinheCultureContestService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -267,11 +268,13 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
             titleRow.createCell(colIndex++).setCellValue("姓名");
             titleRow.createCell(colIndex++).setCellValue("性别");
             titleRow.createCell(colIndex++).setCellValue("年龄");
+            titleRow.createCell(colIndex++).setCellValue("城市");
             titleRow.createCell(colIndex++).setCellValue("参赛通道");
             titleRow.createCell(colIndex++).setCellValue("所在小区/工作单位/公司名称");
             titleRow.createCell(colIndex++).setCellValue("联系电话");
             titleRow.createCell(colIndex++).setCellValue("作品名称");
             titleRow.createCell(colIndex++).setCellValue("得票");
+            titleRow.createCell(colIndex++).setCellValue("创建时间");
 
             XSSFRow row;
             for (int i = 0; i < dataList.size(); i++) {
@@ -283,11 +286,13 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
                 row.createCell(j++).setCellValue(item.getName());
                 row.createCell(j++).setCellValue(item.getGender());
                 row.createCell(j++).setCellValue(item.getAge());
+                row.createCell(j++).setCellValue(item.getCity());
                 row.createCell(j++).setCellValue(getContestChannel(item.getPlayerType()));
                 row.createCell(j++).setCellValue(item.getAddress());
                 row.createCell(j++).setCellValue(item.getPhoneNumber());
                 row.createCell(j++).setCellValue(item.getWorkName());
                 row.createCell(j++).setCellValue(item.getVote());
+                row.createCell(j++).setCellValue(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             }
             return exportAsInputStream(wb);
         }

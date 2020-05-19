@@ -35,21 +35,37 @@ public class QinheCultureContestController {
     private QinheCultureContestService cultureContestService;
 
     @PostMapping("/signup")
-    public ResponseData signUp(@RequestBody QinheCultureContest contest) {
+    public ResponseData signUp(@RequestBody QinheCultureContest contest, @RequestParam(defaultValue = "false") boolean forceNew) {
         if (StringUtils.isBlank(contest.getUserId())) {
             return ResponseData.error(1, "没有用户id");
         }
         if (contest.getType() == null) {
             return ResponseData.error(1, "没有选择比赛类型");
         }
-        QinheCultureContest entity = cultureContestService.getContestByUserId(contest.getUserId(), contest.getType());
-        if (entity == null) {
+
+        if (forceNew) {
             return ResponseData.ok(cultureContestService.signUp(contest));
         } else {
-            contest.setId(entity.getId());
-            contest.setVote(entity.getVote());
-            return ResponseData.ok(cultureContestService.updateSignInfo(contest));
+            QinheCultureContest entity = cultureContestService.getContestByUserId(contest.getUserId(), contest.getType());
+            if (entity == null) {
+                return ResponseData.ok(cultureContestService.signUp(contest));
+            } else {
+                contest.setId(entity.getId());
+                contest.setVote(entity.getVote());
+                return ResponseData.ok(cultureContestService.updateSignInfo(contest));
+            }
         }
+    }
+
+    @PostMapping("/signInfo/update")
+    public ResponseData updateSignInfo(@RequestBody QinheCultureContest contest) {
+        if (StringUtils.isBlank(contest.getUserId())) {
+            return ResponseData.error(1, "没有用户id");
+        }
+        if (contest.getType() == null) {
+            return ResponseData.error(1, "没有选择比赛类型");
+        }
+        return ResponseData.ok(cultureContestService.updateSignInfo(contest));
     }
 
     @GetMapping("/searchWork")
