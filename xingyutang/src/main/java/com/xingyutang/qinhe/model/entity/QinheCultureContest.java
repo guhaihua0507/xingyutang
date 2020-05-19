@@ -15,7 +15,7 @@ public class QinheCultureContest {
     private Long id;
     private String userId;
     private Integer type;   //1 - 美术书法， 2 - 小小演说家, 3 - 诗词朗诵
-    private Integer playerType;
+    private Integer playerType;//1 - 业主， 2 - 媒体, 3 - 员工
     private Integer age;
     private String name;
     private String gender;
