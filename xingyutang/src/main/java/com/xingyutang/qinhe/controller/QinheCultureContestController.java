@@ -69,11 +69,11 @@ public class QinheCultureContestController {
     }
 
     @GetMapping("/searchWork")
-    public ResponseData searchWork(@RequestParam(required = false) String name, @RequestParam(required = false) String phoneNumber) {
+    public ResponseData searchWork(@RequestParam Integer type, @RequestParam Integer playerType, @RequestParam(required = false) String name, @RequestParam(required = false) String phoneNumber) {
         if (StringUtils.isBlank(name) && StringUtils.isBlank(phoneNumber)) {
             return ResponseData.error(1, "请输入姓名或者手机号查询");
         }
-        List<QinheCultureContest> dataList = cultureContestService.searchWork(name, phoneNumber);
+        List<QinheCultureContest> dataList = cultureContestService.searchWork(type, playerType, name, phoneNumber);
         cultureContestService.loadWorkFiles(dataList);
 
         return ResponseData.ok(dataList);

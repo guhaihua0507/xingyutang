@@ -393,9 +393,15 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public List<QinheCultureContest> searchWork(String name, String phoneNumber) {
+    public List<QinheCultureContest> searchWork(Integer type, Integer playerType, String name, String phoneNumber) {
         Condition condition = new Condition(QinheCultureContest.class);
         Example.Criteria criteria = condition.createCriteria();
+        if (type != null) {
+            criteria.andEqualTo("type", type);
+        }
+        if (playerType != null) {
+            criteria.andEqualTo("playerType", playerType);
+        }
         if (StringUtils.isNotBlank(name)) {
             criteria.andLike("name", "%" + name + "%");
         }
