@@ -35,7 +35,7 @@ public interface QinheCultureContestService {
 
     int validateVote(Long id, Integer type, String userId);
 
-    List<QinheCultureContest> listWorksByType(int type);
+    List<QinheCultureContest> listWorksByType(int type, int playerType);
 
     void updateWorkFiles(Long id, MultipartFile[] files) throws IOException;
 
@@ -45,7 +45,7 @@ public interface QinheCultureContestService {
 
     File getThumbFile(QinheCultureFile cultureFile);
 
-    List<RankingVO> listRankingByType(int type, int top);
+    List<RankingVO> listRankingByType(int type, int playerType, int top);
 
     List<String> generateAllThumbs();
 

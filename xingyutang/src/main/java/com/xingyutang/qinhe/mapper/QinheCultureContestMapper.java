@@ -15,9 +15,10 @@ public interface QinheCultureContestMapper extends tk.mybatis.mapper.common.Mapp
 
     @Select("SELECT * FROM t_qinhe_culture_contest t " +
             " WHERE type = #{type} " +
+            "   AND player_type = #{playerType} " +
             "   AND exists (SELECT 1 FROM t_qinhe_culture_file f WHERE f.contest_id = t.id) " +
             " order by t.id ")
-    List<QinheCultureContest> selectWorksByType(int type);
+    List<QinheCultureContest> selectWorksByType(int type, int playerType);
 
     @Select("SELECT * FROM t_qinhe_culture_contest t " +
             " WHERE exists (SELECT 1 FROM t_qinhe_culture_file f WHERE f.contest_id = t.id) ")
@@ -26,8 +27,9 @@ public interface QinheCultureContestMapper extends tk.mybatis.mapper.common.Mapp
     @Select("select id, user_id, name, work_name, vote " +
             "  from t_qinhe_culture_contest t" +
             "  where type = #{type} " +
+            "    and player_type = #{playerType} " +
             "    and exists (SELECT 1 FROM t_qinhe_culture_file f WHERE f.contest_id = t.id) " +
             " order by vote desc " +
             " limit #{num}")
-    List<RankingVO> selectRankingByType(int type, int num);
+    List<RankingVO> selectRankingByType(int type, int playerType, int num);
 }

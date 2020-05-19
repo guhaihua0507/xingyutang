@@ -206,15 +206,15 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public List<QinheCultureContest> listWorksByType(int type) {
-        List<QinheCultureContest> dataList = cultureContestMapper.selectWorksByType(type);
+    public List<QinheCultureContest> listWorksByType(int type, int playerType) {
+        List<QinheCultureContest> dataList = cultureContestMapper.selectWorksByType(type, playerType);
         loadWorkFiles(dataList);
         return dataList;
     }
 
     @Override
-    public List<RankingVO> listRankingByType(int type, int top) {
-        return cultureContestMapper.selectRankingByType(type, top);
+    public List<RankingVO> listRankingByType(int type, int playerType, int top) {
+        return cultureContestMapper.selectRankingByType(type, playerType, top);
     }
 
     @Override

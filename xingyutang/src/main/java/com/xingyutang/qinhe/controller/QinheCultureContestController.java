@@ -111,16 +111,16 @@ public class QinheCultureContestController {
     }
 
     @GetMapping("/workList")
-    public ResponseData listWorks(@RequestParam int type, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+    public ResponseData listWorks(@RequestParam int type, @RequestParam int playerType, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
         PageHelper.startPage(pageNo, pageSize);
-        List<QinheCultureContest> dataList = cultureContestService.listWorksByType(type);
+        List<QinheCultureContest> dataList = cultureContestService.listWorksByType(type, playerType);
         PageHelper.clearPage();
         return ResponseData.ok(dataList);
     }
 
     @GetMapping("/ranking")
-    public ResponseData listRanking(@RequestParam int type, @RequestParam(defaultValue = "10") int top) {
-        List<RankingVO> dataList = cultureContestService.listRankingByType(type, top);
+    public ResponseData listRanking(@RequestParam int type, @RequestParam int playerType, @RequestParam(defaultValue = "10") int top) {
+        List<RankingVO> dataList = cultureContestService.listRankingByType(type, playerType, top);
         return ResponseData.ok(dataList);
     }
 
