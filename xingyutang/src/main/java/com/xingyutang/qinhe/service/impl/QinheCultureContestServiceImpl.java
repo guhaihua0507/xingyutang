@@ -10,7 +10,6 @@ import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +58,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         cultureContestMapper.insert(contest);
         return contest;
     }
-    
+
     @Override
     @Transactional
     public QinheCultureContest updateSignInfo(QinheCultureContest contest) {
@@ -344,7 +342,8 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (Exception ignore){}
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -389,21 +388,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     @Override
     public List<QinheCultureContest> searchWork(Integer type, Integer playerType, String name, String phoneNumber) {
-        Condition condition = new Condition(QinheCultureContest.class);
-        Example.Criteria criteria = condition.createCriteria();
-        if (type != null) {
-            criteria.andEqualTo("type", type);
-        }
-        if (playerType != null) {
-            criteria.andEqualTo("playerType", playerType);
-        }
-        if (StringUtils.isNotBlank(name)) {
-            criteria.andLike("name", "%" + name + "%");
-        }
-        if (StringUtils.isNotBlank(phoneNumber)) {
-            criteria.andEqualTo("phoneNumber", phoneNumber);
-        }
-        return cultureContestMapper.selectByExample(condition);
+        return cultureContestMapper.searchWork(type, playerType, name, phoneNumber);
     }
 
     @Override
