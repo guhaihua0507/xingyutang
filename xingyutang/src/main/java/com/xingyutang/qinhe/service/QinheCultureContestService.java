@@ -17,7 +17,7 @@ public interface QinheCultureContestService {
 
     QinheCultureContest getContestByUserId(String userId, int type);
 
-    QinheCultureContest getContestByUserId(String userId);
+    List<QinheCultureContest> getContestsByUserId(String userId);
 
     QinheCultureContest getContestById(Long id);
 

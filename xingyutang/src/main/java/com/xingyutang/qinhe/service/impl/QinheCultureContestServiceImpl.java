@@ -82,15 +82,10 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     }
 
     @Override
-    public QinheCultureContest getContestByUserId(String userId) {
+    public List<QinheCultureContest> getContestsByUserId(String userId) {
         Condition condition = new Condition(QinheCultureContest.class);
         condition.createCriteria().andEqualTo("userId", userId);
-        List<QinheCultureContest> dataList = cultureContestMapper.selectByExample(condition);
-        if (dataList != null && dataList.size() > 0) {
-            return dataList.get(0);
-        } else {
-            return null;
-        }
+        return cultureContestMapper.selectByExample(condition);
     }
 
     @Override

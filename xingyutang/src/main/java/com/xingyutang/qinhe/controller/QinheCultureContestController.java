@@ -8,6 +8,8 @@ import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -31,6 +33,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/qinhe/culture")
 public class QinheCultureContestController {
+    private final static Logger logger = LoggerFactory.getLogger(QinheCultureContestController.class);
     @Autowired
     private QinheCultureContestService cultureContestService;
 
@@ -44,12 +47,15 @@ public class QinheCultureContestController {
         }
 
         if (forceNew) {
+            logger.info("force to sign new user {}", contest);
             return ResponseData.ok(cultureContestService.signUp(contest));
         } else {
             QinheCultureContest entity = cultureContestService.getContestByUserId(contest.getUserId(), contest.getType());
             if (entity == null) {
+                logger.info("user not exist, sign as new user userId={}, type={}", contest.getUserId(), contest.getType());
                 return ResponseData.ok(cultureContestService.signUp(contest));
             } else {
+                logger.info("update user: userId={}, type={}", contest.getUserId(), contest.getType());
                 contest.setId(entity.getId());
                 contest.setVote(entity.getVote());
                 return ResponseData.ok(cultureContestService.updateSignInfo(contest));
