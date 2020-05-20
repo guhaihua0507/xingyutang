@@ -4,10 +4,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Table(name = "t_ruihong_appointment")
-public class RuiHongAppointment {
+public class RuihongAppointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +17,8 @@ public class RuiHongAppointment {
     private String nickName;
     private String phoneNumber;
     private Date createTime;
+    @Transient
+    private int ranking;
 
     public Long getId() {
         return id;
@@ -63,5 +66,13 @@ public class RuiHongAppointment {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public int getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
     }
 }
