@@ -127,7 +127,7 @@ public class QinheCultureContestController {
         }
         if (validate == 2) {
             logger.info("你已经达到投票上限: userId={}, contestid={}", voteVO.getUserId(), voteVO.getId());
-            return ResponseData.error(1, "你已经达到投票上限");
+            return ResponseData.error(2, "你已经达到投票上限");
         }
 
         cultureContestService.vote(voteVO.getId(), voteVO.getUserId(), contest.getType());

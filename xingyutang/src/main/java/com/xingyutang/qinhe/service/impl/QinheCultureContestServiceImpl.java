@@ -226,12 +226,12 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
 
     @Override
     public int validateVote(Long id, Integer type, String userId) {
-        Condition condition = new Condition(QinheCultureVote.class);
-        condition.createCriteria().andEqualTo("contestId", id).andEqualTo("userId", userId);
-        int count = cultureVoteMapper.selectCountByExample(condition);
-        if (count > 0) {
-            return 1;   //重复投票
-        }
+//        Condition condition = new Condition(QinheCultureVote.class);
+//        condition.createCriteria().andEqualTo("contestId", id).andEqualTo("userId", userId);
+//        int count = cultureVoteMapper.selectCountByExample(condition);
+//        if (count > 0) {
+//            return 1;   //重复投票
+//        }
 
         Date startTime = DateUtils.truncate(new Date(), Calendar.DATE);
         Date endTime = DateUtils.addDays(startTime, 1);
