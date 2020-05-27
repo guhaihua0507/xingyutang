@@ -16,11 +16,13 @@ import java.util.List;
 
 @Service
 public class FolidayGameServiceImpl implements FolidayGameService {
+    private final static int MAX_STAGE = 3;
 
     @Autowired
     private FolidayGameMapper folidayGameMapper;
     @Autowired
     private FolidayGameCoinMapper folidayGameCoinMapper;
+
 
     @Override
     public FolidayGame signIn(FolidayUserVo userVo) {
@@ -69,7 +71,7 @@ public class FolidayGameServiceImpl implements FolidayGameService {
                 break;
         }
 
-        if (entity.getStage() == 4) {
+        if (entity.getStage() == MAX_STAGE) {
             entity.setCoin(entity.getCoin() <= 1 ? 0 : entity.getCoin() - 1);
             entity.setStage(1);
         } else {
