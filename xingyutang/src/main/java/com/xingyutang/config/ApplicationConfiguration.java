@@ -24,6 +24,7 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
                         "/api/rongchuang/life/listAll",
                         "/api/rongchuang/life/export",
                         "/api/qinhe/culture/**",
-                        "/api/ruihong/**");
+                        "/api/ruihong/**",
+                        "/api/foliday/**");
     }
 }
