@@ -28,6 +28,7 @@ import com.github.pagehelper.PageHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,6 +59,8 @@ public class QinheCultureContestController {
                 logger.info("update user: userId={}, type={}", contest.getUserId(), contest.getType());
                 contest.setId(entity.getId());
                 contest.setVote(entity.getVote());
+                contest.setCreateTime(entity.getCreateTime());
+                contest.setUpdateTime(new Date());
                 return ResponseData.ok(cultureContestService.updateSignInfo(contest));
             }
         }

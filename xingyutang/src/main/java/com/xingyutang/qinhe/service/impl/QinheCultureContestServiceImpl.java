@@ -54,6 +54,7 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     @Override
     public QinheCultureContest signUp(QinheCultureContest contest) {
         contest.setCreateTime(new Date());
+        contest.setUpdateTime(new Date());
         contest.setVote(0L);
         cultureContestMapper.insert(contest);
         return contest;
@@ -62,7 +63,6 @@ public class QinheCultureContestServiceImpl implements QinheCultureContestServic
     @Override
     @Transactional
     public QinheCultureContest updateSignInfo(QinheCultureContest contest) {
-        contest.setCreateTime(new Date());
         cultureContestMapper.updateByPrimaryKey(contest);
         return contest;
     }

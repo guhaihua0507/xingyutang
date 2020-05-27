@@ -26,6 +26,7 @@ public class QinheCultureContest {
     private String workName;
     private Long vote;
     private Date createTime;
+    private Date updateTime;
     @Transient
     private List<QinheCultureFile> files;
 
@@ -147,5 +148,13 @@ public class QinheCultureContest {
 
     public void setPlayerType(Integer playerType) {
         this.playerType = playerType;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
