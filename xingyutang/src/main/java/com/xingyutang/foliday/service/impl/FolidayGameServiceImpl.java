@@ -1,7 +1,9 @@
 package com.xingyutang.foliday.service.impl;
 
 import com.xingyutang.foliday.entity.FolidayGame;
+import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.entity.FolidayGameCoin;
+import com.xingyutang.foliday.mapper.FolidayGameAwardMapper;
 import com.xingyutang.foliday.mapper.FolidayGameCoinMapper;
 import com.xingyutang.foliday.mapper.FolidayGameMapper;
 import com.xingyutang.foliday.service.FolidayGameService;
@@ -22,7 +24,8 @@ public class FolidayGameServiceImpl implements FolidayGameService {
     private FolidayGameMapper folidayGameMapper;
     @Autowired
     private FolidayGameCoinMapper folidayGameCoinMapper;
-
+    @Autowired
+    private FolidayGameAwardMapper folidayGameAwardMapper;
 
     @Override
     public FolidayGame signIn(FolidayUserVo userVo) {
@@ -71,12 +74,12 @@ public class FolidayGameServiceImpl implements FolidayGameService {
                 break;
         }
 
-        if (entity.getStage() == MAX_STAGE) {
-            entity.setCoin(entity.getCoin() <= 1 ? 0 : entity.getCoin() - 1);
+/*        if (entity.getStage() == MAX_STAGE) {
+//            entity.setCoin(entity.getCoin() <= 1 ? 0 : entity.getCoin() - 1);
             entity.setStage(1);
         } else {
             entity.setStage(entity.getStage() + 1);
-        }
+        }*/
 
         entity.setUpdateTime(new Date());
 
@@ -106,6 +109,39 @@ public class FolidayGameServiceImpl implements FolidayGameService {
         folidayGameCoinMapper.insert(coin);
 
         folidayGameMapper.addCoinByUser(userGameId);
+    }
+
+    @Override
+    public void updateUserGame(FolidayGame userGame) {
+        userGame.setUpdateTime(new Date());
+        folidayGameMapper.updateByPrimaryKey(userGame);
+    }
+
+    @Override
+    @Transactional
+    public void claimAward(FolidayGameAward gameAward) {
+        FolidayGame userGame = getUserGameById(gameAward.getUserGameId());
+
+        userGame.setCard1(userGame.getCard1() - gameAward.getCard1());
+        if (userGame.getCard1() < 0) {
+            throw new IllegalArgumentException("卡片不够");
+        }
+        userGame.setCard2(userGame.getCard2() - gameAward.getCard2());
+        if (userGame.getCard2() < 0) {
+            throw new IllegalArgumentException("卡片不够");
+        }
+        userGame.setCard3(userGame.getCard3() - gameAward.getCard3());
+        if (userGame.getCard3() < 0) {
+            throw new IllegalArgumentException("卡片不够");
+        }
+        userGame.setCard4(userGame.getCard4() - gameAward.getCard4());
+        if (userGame.getCard4() < 0) {
+            throw new IllegalArgumentException("卡片不够");
+        }
+        gameAward.setCreateTime(new Date());
+
+        folidayGameMapper.updateByPrimaryKey(userGame);
+        folidayGameAwardMapper.insert(gameAward);
     }
 
     private FolidayGameCoin getCoin(Long userGameId, String userId) {
