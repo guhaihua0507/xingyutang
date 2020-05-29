@@ -8,6 +8,8 @@ import com.xingyutang.foliday.mapper.FolidayGameCoinMapper;
 import com.xingyutang.foliday.mapper.FolidayGameMapper;
 import com.xingyutang.foliday.service.FolidayGameService;
 import com.xingyutang.foliday.vo.FolidayUserVo;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,11 +56,11 @@ public class FolidayGameServiceImpl implements FolidayGameService {
 
     @Override
     @Transactional
-    public FolidayGame gainCard(Long id, Integer card) {
+    public int gainCard(Long id) {
         FolidayGame entity = getUserGameById(id);
-        if (card == null) {
-            return entity;
-        }
+
+        int card = RandomUtils.nextInt(1, 5);
+
         switch (card) {
             case 1:
                 entity.setCard1(entity.getCard1() + 1);
@@ -84,7 +86,7 @@ public class FolidayGameServiceImpl implements FolidayGameService {
         entity.setUpdateTime(new Date());
 
         folidayGameMapper.updateByPrimaryKey(entity);
-        return entity;
+        return card;
     }
 
     @Override
@@ -142,6 +144,18 @@ public class FolidayGameServiceImpl implements FolidayGameService {
 
         folidayGameMapper.updateByPrimaryKey(userGame);
         folidayGameAwardMapper.insert(gameAward);
+    }
+
+    @Override
+    public FolidayGameAward getAwardByGameId(Long userGameId) {
+        Condition condition = new Condition(FolidayGameAward.class);
+        condition.and().andEqualTo("userGameId", userGameId);
+        List<FolidayGameAward> dataList = folidayGameAwardMapper.selectByExample(condition);
+        if (CollectionUtils.isNotEmpty(dataList)) {
+            return dataList.get(0);
+        } else {
+            return null;
+        }
     }
 
     private FolidayGameCoin getCoin(Long userGameId, String userId) {

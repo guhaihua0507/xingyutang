@@ -3,6 +3,7 @@ package com.xingyutang.foliday.service;
 import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.vo.FolidayUserVo;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface FolidayGameService {
 
@@ -10,7 +11,7 @@ public interface FolidayGameService {
 
     FolidayGame getUserGameByUserId(String userId);
 
-    FolidayGame gainCard(Long id, Integer card);
+    int gainCard(Long id);
 
     FolidayGame getUserGameById(Long id);
 
@@ -19,4 +20,6 @@ public interface FolidayGameService {
     void updateUserGame(FolidayGame userGame);
 
     void claimAward(FolidayGameAward gameAward);
+
+    FolidayGameAward getAwardByGameId(Long userGameId);
 }

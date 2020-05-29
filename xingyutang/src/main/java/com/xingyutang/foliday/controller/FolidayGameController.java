@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -58,13 +57,18 @@ public class FolidayGameController {
 
     @PostMapping("/gainCard")
     public ResponseData addCard(@RequestBody GainCardVo gainCardVo) {
-        return ResponseData.ok(folidayGameService.gainCard(gainCardVo.getId(), gainCardVo.getCard()));
+        return ResponseData.ok(folidayGameService.gainCard(gainCardVo.getId()));
     }
 
     @PostMapping("/addCoin")
     public ResponseData addCoinByUser(@RequestBody CoinVo coinVo) {
         folidayGameService.addCoinByUser(coinVo.getId(), coinVo.getUserId());
         return ResponseData.ok();
+    }
+
+    @GetMapping("/award")
+    public ResponseData showAward(@RequestParam Long id) {
+        return ResponseData.ok(folidayGameService.getAwardByGameId(id));
     }
 
     @PostMapping("/claimAward")
@@ -78,6 +82,46 @@ public class FolidayGameController {
                 || claimAwardVo.getCard3() < 0
                 || claimAwardVo.getCard4() < 0) {
             return ResponseData.error(1, "参数不合法");
+        }
+
+        FolidayGameAward award = folidayGameService.getAwardByGameId(claimAwardVo.getId());
+        if (award != null) {
+            return ResponseData.error(1, "你已经兑换过奖品");
+        }
+
+        if (claimAwardVo.getAwardType() == null) {
+            return ResponseData.error(1, "没有选择奖品");
+        }
+
+        //validate award
+        if (claimAwardVo.getAwardType() == 1) {
+            int n = 0;
+            for (int i = 0; i < 4; i++) {
+                if (getCard(claimAwardVo, i + 1) == 1) {
+                    n += 1;
+                }
+            }
+
+            if (n != 2) {
+                return ResponseData.error(1, "必须用2张不同的卡片兑换该奖品");
+            }
+        } else if (claimAwardVo.getAwardType() == 2) {
+            if (!(claimAwardVo.getCard1() == 1 && claimAwardVo.getCard2() == 1)) {
+                return ResponseData.error(1, "必须使用复游两张卡片兑换");
+            }
+        } else if (claimAwardVo.getAwardType() == 3) {
+            if (!(claimAwardVo.getCard1() == 1 && claimAwardVo.getCard2() == 1 && claimAwardVo.getCard3() == 1)) {
+                return ResponseData.error(1, "必须使用复游城三张卡片兑换");
+            }
+        } else if (claimAwardVo.getAwardType() == 4) {
+            if (!(claimAwardVo.getCard1() == 1
+                    && claimAwardVo.getCard2() == 1
+                    && claimAwardVo.getCard3() == 1
+                    && claimAwardVo.getCard4() == 1)) {
+                return ResponseData.error(1, "必须使用复游城+品牌logo四张卡片兑换");
+            }
+        } else {
+            return ResponseData.error(1, "不存在的奖品类型:" + claimAwardVo.getAwardType());
         }
 
         FolidayGameAward gameAward = new FolidayGameAward();
@@ -95,5 +139,21 @@ public class FolidayGameController {
             logger.error("兑奖失败", e);
             return ResponseData.error(1, e.getMessage() == null ? "兑奖失败" : e.getMessage());
         }
+    }
+
+    private int getCard(ClaimAwardVo claimAwardVo, int cardIndex) {
+        if (cardIndex == 1) {
+            return claimAwardVo.getCard1();
+        }
+        if (cardIndex == 2) {
+            return claimAwardVo.getCard2();
+        }
+        if (cardIndex == 3) {
+            return claimAwardVo.getCard3();
+        }
+        if (cardIndex == 4) {
+            return claimAwardVo.getCard4();
+        }
+        throw new IllegalArgumentException("卡片参数错误");
     }
 }
