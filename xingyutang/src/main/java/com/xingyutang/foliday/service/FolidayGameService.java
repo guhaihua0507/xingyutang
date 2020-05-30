@@ -3,7 +3,6 @@ package com.xingyutang.foliday.service;
 import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.vo.FolidayUserVo;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface FolidayGameService {
 
