@@ -4,6 +4,8 @@ import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.vo.FolidayUserVo;
 
+import java.util.List;
+
 public interface FolidayGameService {
 
     FolidayGame signIn(FolidayUserVo userVo);
@@ -21,4 +23,6 @@ public interface FolidayGameService {
     void claimAward(FolidayGameAward gameAward);
 
     FolidayGameAward getAwardByGameId(Long userGameId);
+
+    List<FolidayGame> listAllUserGames();
 }

@@ -158,6 +158,11 @@ public class FolidayGameServiceImpl implements FolidayGameService {
         }
     }
 
+    @Override
+    public List<FolidayGame> listAllUserGames() {
+        return folidayGameMapper.selectAll();
+    }
+
     private FolidayGameCoin getCoin(Long userGameId, String userId) {
         Condition condition = new Condition(FolidayGameCoin.class);
         condition.and().andEqualTo("userGameId", userGameId).andEqualTo("userId", userId);

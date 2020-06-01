@@ -29,6 +29,11 @@ public class FolidayGameController {
     @Autowired
     private FolidayGameService folidayGameService;
 
+    @GetMapping("/listAll")
+    public ResponseData listAllUserGames() {
+        return ResponseData.ok(folidayGameService.listAllUserGames());
+    }
+
     @GetMapping("/userGame")
     public ResponseData getUserGame(@RequestParam String userId) {
         FolidayGame userGame = folidayGameService.getUserGameByUserId(userId);
