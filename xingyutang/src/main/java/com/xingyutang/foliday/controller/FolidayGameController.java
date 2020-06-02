@@ -11,6 +11,11 @@ import com.xingyutang.foliday.vo.GainCardVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -144,6 +150,17 @@ public class FolidayGameController {
             logger.error("兑奖失败", e);
             return ResponseData.error(1, e.getMessage() == null ? "兑奖失败" : e.getMessage());
         }
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<InputStreamSource> download() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "list.xlsx");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(folidayGameService.exportAll()));
     }
 
     private int getCard(ClaimAwardVo claimAwardVo, int cardIndex) {

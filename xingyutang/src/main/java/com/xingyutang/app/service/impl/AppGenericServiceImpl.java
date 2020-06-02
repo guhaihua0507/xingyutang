@@ -1,6 +1,6 @@
 package com.xingyutang.app.service.impl;
 
-import com.xingyutang.app.service.CommonService;
+import com.xingyutang.app.service.AppGenericService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 
 @Service
-public class CommonServiceImpl implements CommonService {
+public class AppGenericServiceImpl implements AppGenericService {
 
     @Override
     public InputStream exportAsInputStream(Workbook wb) {

@@ -4,6 +4,8 @@ import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.vo.FolidayUserVo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface FolidayGameService {
@@ -25,4 +27,6 @@ public interface FolidayGameService {
     FolidayGameAward getAwardByGameId(Long userGameId);
 
     List<FolidayGame> listAllUserGames();
+
+    InputStream exportAll() throws IOException;
 }

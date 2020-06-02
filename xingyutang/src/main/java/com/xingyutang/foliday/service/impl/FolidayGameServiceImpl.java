@@ -1,5 +1,6 @@
 package com.xingyutang.foliday.service.impl;
 
+import com.xingyutang.app.service.AppGenericService;
 import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.entity.FolidayGameCoin;
@@ -10,11 +11,17 @@ import com.xingyutang.foliday.service.FolidayGameService;
 import com.xingyutang.foliday.vo.FolidayUserVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +35,8 @@ public class FolidayGameServiceImpl implements FolidayGameService {
     private FolidayGameCoinMapper folidayGameCoinMapper;
     @Autowired
     private FolidayGameAwardMapper folidayGameAwardMapper;
+    @Autowired
+    private AppGenericService appGenericService;
 
     @Override
     public FolidayGame signIn(FolidayUserVo userVo) {
@@ -161,6 +170,35 @@ public class FolidayGameServiceImpl implements FolidayGameService {
     @Override
     public List<FolidayGame> listAllUserGames() {
         return folidayGameMapper.selectAll();
+    }
+
+    @Override
+    public InputStream exportAll() throws IOException {
+        List<FolidayGame> dataList = listAllUserGames();
+
+        try (XSSFWorkbook wb = new XSSFWorkbook()) {
+            XSSFSheet sheet = wb.createSheet();
+            int rowIndex = 0;
+            int colIndex = 0;
+            XSSFRow titleRow = sheet.createRow(rowIndex++);
+
+            titleRow.createCell(colIndex++).setCellValue("序号");
+            titleRow.createCell(colIndex++).setCellValue("姓名");
+            titleRow.createCell(colIndex++).setCellValue("电话");
+            titleRow.createCell(colIndex++).setCellValue("创建时间");
+
+            XSSFRow row;
+            for (int i = 0; i < dataList.size(); i++) {
+                row = sheet.createRow(rowIndex++);
+                FolidayGame item = dataList.get(i);
+                int j = 0;
+                row.createCell(j++).setCellValue(String.valueOf(i + 1));
+                row.createCell(j++).setCellValue(item.getName());
+                row.createCell(j++).setCellValue(item.getPhoneNumber());
+                row.createCell(j++).setCellValue(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            }
+            return appGenericService.exportAsInputStream(wb);
+        }
     }
 
     private FolidayGameCoin getCoin(Long userGameId, String userId) {

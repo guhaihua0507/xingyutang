@@ -1,7 +1,6 @@
 package com.xingyutang.ruihong.service.impl;
 
-import com.xingyutang.app.service.CommonService;
-import com.xingyutang.rongchuang.model.vo.LifeQuestionResultVo;
+import com.xingyutang.app.service.AppGenericService;
 import com.xingyutang.ruihong.entity.RuihongAppointment;
 import com.xingyutang.ruihong.mapper.RuihongAppointmentMapper;
 import com.xingyutang.ruihong.service.RuihongAppointmentService;
@@ -9,7 +8,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Condition;
@@ -24,7 +22,7 @@ public class RuihongAppointmentServiceImpl implements RuihongAppointmentService 
     @Autowired
     private RuihongAppointmentMapper appointmentMapper;
     @Autowired
-    private CommonService commonService;
+    private AppGenericService appGenericService;
 
     @Override
     public RuihongAppointment save(RuihongAppointment appointment) {
@@ -102,7 +100,7 @@ public class RuihongAppointmentServiceImpl implements RuihongAppointmentService 
                 row.createCell(j++).setCellValue(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             }
 
-            return commonService.exportAsInputStream(wb);
+            return appGenericService.exportAsInputStream(wb);
         }
     }
 }

@@ -4,6 +4,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.InputStream;
 
-public interface CommonService {
+public interface AppGenericService {
     InputStream exportAsInputStream(Workbook wb);
 }
