@@ -1,7 +1,9 @@
 package com.xingyutang.foliday.service;
 
+import com.xingyutang.foliday.entity.FolidayCardPool;
 import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
+import com.xingyutang.foliday.entity.FolidayPrizePool;
 import com.xingyutang.foliday.vo.FolidayUserVo;
 
 import java.io.IOException;
@@ -29,4 +31,10 @@ public interface FolidayGameService {
     List<FolidayGame> listAllUserGames();
 
     InputStream exportAll() throws IOException;
+
+    List<FolidayPrizePool> getPrizePoolList();
+
+    FolidayPrizePool getPrizePoolById(Integer id);
+
+    List<FolidayCardPool> getCardPoolList();
 }

@@ -1,12 +1,16 @@
 package com.xingyutang.foliday.service.impl;
 
 import com.xingyutang.app.service.AppGenericService;
+import com.xingyutang.foliday.entity.FolidayCardPool;
 import com.xingyutang.foliday.entity.FolidayGame;
 import com.xingyutang.foliday.entity.FolidayGameAward;
 import com.xingyutang.foliday.entity.FolidayGameCoin;
+import com.xingyutang.foliday.entity.FolidayPrizePool;
+import com.xingyutang.foliday.mapper.FolidayCardPoolMapper;
 import com.xingyutang.foliday.mapper.FolidayGameAwardMapper;
 import com.xingyutang.foliday.mapper.FolidayGameCoinMapper;
 import com.xingyutang.foliday.mapper.FolidayGameMapper;
+import com.xingyutang.foliday.mapper.FolidayPrizePoolMapper;
 import com.xingyutang.foliday.service.FolidayGameService;
 import com.xingyutang.foliday.vo.FolidayUserVo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FolidayGameServiceImpl implements FolidayGameService {
@@ -37,6 +42,10 @@ public class FolidayGameServiceImpl implements FolidayGameService {
     private FolidayGameAwardMapper folidayGameAwardMapper;
     @Autowired
     private AppGenericService appGenericService;
+    @Autowired
+    private FolidayCardPoolMapper cardPoolMapper;
+    @Autowired
+    private FolidayPrizePoolMapper prizePoolMapper;
 
     @Override
     public FolidayGame signIn(FolidayUserVo userVo) {
@@ -65,10 +74,16 @@ public class FolidayGameServiceImpl implements FolidayGameService {
 
     @Override
     @Transactional
-    public int gainCard(Long id) {
+    public synchronized int gainCard(Long id) {
         FolidayGame entity = getUserGameById(id);
 
-        int card = RandomUtils.nextInt(1, 5);
+        List<FolidayCardPool> cardPools = getCardPoolList();
+        List<FolidayCardPool> availCardPool = cardPools.stream().filter(c -> c.getAmount() > 0).collect(Collectors.toList());
+
+        int randomIndex = RandomUtils.nextInt(0, availCardPool.size());
+        FolidayCardPool cardPool = availCardPool.get(randomIndex);
+        int card = cardPool.getId();
+        cardPool.setAmount(cardPool.getAmount() - 1);
 
         switch (card) {
             case 1:
@@ -85,16 +100,10 @@ public class FolidayGameServiceImpl implements FolidayGameService {
                 break;
         }
 
-/*        if (entity.getStage() == MAX_STAGE) {
-//            entity.setCoin(entity.getCoin() <= 1 ? 0 : entity.getCoin() - 1);
-            entity.setStage(1);
-        } else {
-            entity.setStage(entity.getStage() + 1);
-        }*/
-
         entity.setUpdateTime(new Date());
 
         folidayGameMapper.updateByPrimaryKey(entity);
+        cardPoolMapper.updateByPrimaryKey(cardPool);
         return card;
     }
 
@@ -130,7 +139,7 @@ public class FolidayGameServiceImpl implements FolidayGameService {
 
     @Override
     @Transactional
-    public void claimAward(FolidayGameAward gameAward) {
+    public synchronized void claimAward(FolidayGameAward gameAward) {
         FolidayGame userGame = getUserGameById(gameAward.getUserGameId());
 
         userGame.setCard1(userGame.getCard1() - gameAward.getCard1());
@@ -151,6 +160,17 @@ public class FolidayGameServiceImpl implements FolidayGameService {
         }
         gameAward.setCreateTime(new Date());
 
+        Integer awardType = gameAward.getAwardType();
+        FolidayPrizePool prizePool = getPrizePoolById(awardType);
+        if (prizePool == null) {
+            throw new IllegalArgumentException("不存在的奖品类型");
+        }
+        if (prizePool.getAmount() <= 0) {
+            throw new IllegalStateException("奖品已经兑换完毕");
+        }
+        prizePool.setAmount(prizePool.getAmount() - 1);
+
+        prizePoolMapper.updateByPrimaryKey(prizePool);
         folidayGameMapper.updateByPrimaryKey(userGame);
         folidayGameAwardMapper.insert(gameAward);
     }
@@ -210,5 +230,20 @@ public class FolidayGameServiceImpl implements FolidayGameService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<FolidayPrizePool> getPrizePoolList() {
+        return prizePoolMapper.selectAll();
+    }
+
+    @Override
+    public FolidayPrizePool getPrizePoolById(Integer id) {
+        return prizePoolMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<FolidayCardPool> getCardPoolList() {
+        return cardPoolMapper.selectAll();
     }
 }
