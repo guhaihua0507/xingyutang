@@ -8,6 +8,7 @@ import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,14 @@ public class QinheCultureContestController {
 
     @PostMapping("/vote")
     public ResponseData vote(@RequestBody VoteVO voteVO) {
+        try {
+            Date voteStart = DateUtils.parseDate("2020/06/15 10:00:00", "yyyy/MM/dd HH:mm:ss");
+            if (System.currentTimeMillis() < voteStart.getTime()) {
+                return ResponseData.error(1, "投票还没开始");
+            }
+        } catch (Exception e) {
+            logger.error("error check date", e);
+        }
         QinheCultureContest contest = cultureContestService.getContestById(voteVO.getId());
 
         int validate = cultureContestService.validateVote(voteVO.getId(), contest.getType(), voteVO.getUserId());
