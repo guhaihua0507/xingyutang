@@ -64,6 +64,19 @@ public class SpringCityServiceImpl implements SpringCityService {
         return userMapper.selectByPrimaryKey(id);
     }
 
+    @Override
+    public SpringCityUser updateUser(SpringCityUser userVo) {
+        SpringCityUser entity = getUserById(userVo.getId());
+        if (entity == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+        entity.setName(userVo.getName());
+        entity.setPhoneNumber(userVo.getPhoneNumber());
+        entity.setUpdateTime(new Date());
+        userMapper.updateByPrimaryKey(entity);
+        return entity;
+    }
+
     private SpringCityPowerSupport getPowerSupport(Long userId, String wxOpenId) {
         Condition condition = new Condition(SpringCityPowerSupport.class);
         condition.and().andEqualTo("userId", userId).andEqualTo("wxOpenId", wxOpenId);

@@ -21,6 +21,8 @@ public interface SpringCityService {
 
     SpringCityUser getUserById(Long id);
 
+    SpringCityUser updateUser(SpringCityUser userVo);
+
     void addPowerByWxUser(Long userId, String wxOpenId);
 
     List<SpringCityAward> getAwards();

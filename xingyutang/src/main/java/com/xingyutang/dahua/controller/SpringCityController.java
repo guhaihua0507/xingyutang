@@ -50,6 +50,11 @@ public class SpringCityController {
         return ResponseData.ok(springCityService.signIn(user));
     }
 
+    @PostMapping("/user/update")
+    public ResponseData updateUserInfo(@RequestBody SpringCityUser userVo) {
+        return ResponseData.ok(springCityService.updateUser(userVo));
+    }
+
     @PostMapping("/supportPower")
     public ResponseData supportPower(@RequestBody PowerSupportVo powerSupportVo) {
         springCityService.addPowerByWxUser(powerSupportVo.getUserId(), powerSupportVo.getWxOpenId());
