@@ -65,6 +65,7 @@ public class SpringCityServiceImpl implements SpringCityService {
     }
 
     @Override
+    @Transactional
     public SpringCityUser updateUser(SpringCityUser userVo) {
         SpringCityUser entity = getUserById(userVo.getId());
         if (entity == null) {
