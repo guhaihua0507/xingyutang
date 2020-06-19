@@ -1,12 +1,12 @@
 package com.xingyutang.qinhe.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.xingyutang.app.model.vo.ResponseData;
 import com.xingyutang.qinhe.model.entity.QinheCultureContest;
 import com.xingyutang.qinhe.model.entity.QinheCultureFile;
 import com.xingyutang.qinhe.model.vo.RankingVO;
 import com.xingyutang.qinhe.model.vo.VoteVO;
 import com.xingyutang.qinhe.service.QinheCultureContestService;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.github.pagehelper.PageHelper;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -123,9 +121,9 @@ public class QinheCultureContestController {
     @PostMapping("/vote")
     public ResponseData vote(@RequestBody VoteVO voteVO) {
         try {
-            Date voteStart = DateUtils.parseDate("2020/06/15 10:00:00", "yyyy/MM/dd HH:mm:ss");
-            if (System.currentTimeMillis() < voteStart.getTime()) {
-                return ResponseData.error(1, "投票还没开始");
+            Date voteEnd = DateUtils.parseDate("2020/06/20 00:00:00", "yyyy/MM/dd HH:mm:ss");
+            if (System.currentTimeMillis() >= voteEnd.getTime()) {
+                return ResponseData.error(1, "投票已经结束");
             }
         } catch (Exception e) {
             logger.error("error check date", e);
