@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/dahua/anniversary")
 public class AnniversaryPrizeController {
@@ -35,9 +38,9 @@ public class AnniversaryPrizeController {
 
     @GetMapping("/play")
     public ResponseData drawLottery(@RequestParam Long userId) {
-        AnniversaryUserPrize userPrize = anniversaryUserService.getUserPrize(userId);
+        AnniversaryUserPrize userPrize = anniversaryUserService.getUserPrize(userId, new Date());
         if (userPrize != null) {
-            return ResponseData.error(1, "你已经抽过奖了");
+            return ResponseData.error(1, "你今天已经抽过奖了");
         }
         Integer prize = anniversaryUserService.drawLottery(userId);
         if (prize == null) {
@@ -48,11 +51,7 @@ public class AnniversaryPrizeController {
 
     @GetMapping("/userPrize")
     public ResponseData getUserPrize(Long userId) {
-        AnniversaryUserPrize userPrize = anniversaryUserService.getUserPrize(userId);
-        if (userPrize != null) {
-            return ResponseData.ok(userPrize.getPrizeId());
-        } else {
-            return ResponseData.ok();
-        }
+        List<AnniversaryUserPrize> userPrizes = anniversaryUserService.getUserPrizeList(userId);
+        return ResponseData.ok(userPrizes);
     }
 }

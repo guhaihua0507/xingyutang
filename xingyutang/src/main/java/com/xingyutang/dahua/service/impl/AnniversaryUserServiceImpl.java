@@ -8,10 +8,12 @@ import com.xingyutang.dahua.mapper.AnniversaryUserMapper;
 import com.xingyutang.dahua.mapper.AnniversaryUserPrizeMapper;
 import com.xingyutang.dahua.service.AnniversaryUserService;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Condition;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +47,23 @@ public class AnniversaryUserServiceImpl implements AnniversaryUserService {
     }
 
     @Override
-    public AnniversaryUserPrize getUserPrize(Long userId) {
+    public AnniversaryUserPrize getUserPrize(Long userId, Date date) {
+        Date startTime = DateUtils.truncate(date, Calendar.DATE);
+        Date endTime = DateUtils.addSeconds(DateUtils.addDays(startTime, 1), -1);
+
+        Condition condition = new Condition(AnniversaryUserPrize.class);
+        condition.createCriteria().andEqualTo("userId", userId)
+                .andBetween("createTime", startTime, endTime);
+
+        return userPrizeMapper.selectOneByExample(condition);
+    }
+
+    @Override
+    public List<AnniversaryUserPrize> getUserPrizeList(Long userId) {
         Condition condition = new Condition(AnniversaryUserPrize.class);
         condition.createCriteria().andEqualTo("userId", userId);
-        return userPrizeMapper.selectOneByExample(condition);
+        condition.setOrderByClause("create_time desc");
+        return userPrizeMapper.selectByExample(condition);
     }
 
     @Override

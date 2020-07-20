@@ -4,6 +4,7 @@ import com.xingyutang.dahua.entity.AnniversaryPrizePool;
 import com.xingyutang.dahua.entity.AnniversaryUser;
 import com.xingyutang.dahua.entity.AnniversaryUserPrize;
 
+import java.util.Date;
 import java.util.List;
 
 public interface AnniversaryUserService {
@@ -11,9 +12,11 @@ public interface AnniversaryUserService {
 
     AnniversaryUser getUserByOpenId(String wxOpenId);
 
-    AnniversaryUserPrize getUserPrize(Long userId);
+    AnniversaryUserPrize getUserPrize(Long userId, Date date);
 
     Integer drawLottery(Long userId);
 
     List<AnniversaryPrizePool> getAllPrizePool();
+
+    List<AnniversaryUserPrize> getUserPrizeList(Long userId);
 }
