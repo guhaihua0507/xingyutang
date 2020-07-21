@@ -54,4 +54,10 @@ public class AnniversaryPrizeController {
         List<AnniversaryUserPrize> userPrizes = anniversaryUserService.getUserPrizeList(userId);
         return ResponseData.ok(userPrizes);
     }
+
+    @GetMapping("/resetPrizePool")
+    public ResponseData resetPrizePool() {
+        anniversaryUserService.resetPrizePool();
+        return ResponseData.ok();
+    }
 }

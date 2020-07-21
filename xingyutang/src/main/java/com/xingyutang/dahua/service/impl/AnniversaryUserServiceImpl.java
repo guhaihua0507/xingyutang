@@ -9,7 +9,10 @@ import com.xingyutang.dahua.mapper.AnniversaryUserPrizeMapper;
 import com.xingyutang.dahua.service.AnniversaryUserService;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -20,6 +23,8 @@ import java.util.Map;
 
 @Service
 public class AnniversaryUserServiceImpl implements AnniversaryUserService {
+    private final static Logger logger = LoggerFactory.getLogger(AnniversaryUserServiceImpl.class);
+
     private final static int[] PRIZE_WEIGHT = {8, 16, 83, 83, 833, 8977};
 
     @Autowired
@@ -29,7 +34,25 @@ public class AnniversaryUserServiceImpl implements AnniversaryUserService {
     @Autowired
     private AnniversaryUserPrizeMapper userPrizeMapper;
 
-    private Map<Long, AnniversaryPrizePool> prizePoolMap = null;
+    @Override
+    @Scheduled(cron = "0 0 0 1 * ? ")
+    public void resetPrizePool() {
+        setPrizePoolAmount(1L, 2);
+        setPrizePoolAmount(2L, 2);
+        setPrizePoolAmount(3L, 20);
+        setPrizePoolAmount(4L, 20);
+        setPrizePoolAmount(5L, 100);
+        setPrizePoolAmount(6L, 1077);
+
+        logger.info("prize pool reset successfully");
+    }
+
+    private void setPrizePoolAmount(Long id, int amount) {
+        AnniversaryPrizePool prizePool = new AnniversaryPrizePool();
+        prizePool.setId(id);
+        prizePool.setAmount(amount);
+        prizePoolMapper.updateByPrimaryKeySelective(prizePool);
+    }
 
     @Override
     public AnniversaryUser signIn(AnniversaryUser entity) {

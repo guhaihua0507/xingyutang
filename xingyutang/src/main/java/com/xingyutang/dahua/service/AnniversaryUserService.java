@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface AnniversaryUserService {
+    void resetPrizePool();
+
     AnniversaryUser signIn(AnniversaryUser entity);
 
     AnniversaryUser getUserByOpenId(String wxOpenId);
